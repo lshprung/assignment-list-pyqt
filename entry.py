@@ -42,7 +42,7 @@ class Entry:
             body.setText("{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
         if self.link:
             body.setOpenExternalLinks(True)
-            body.setText(body.text() + "<a href=\"{0}\" style=\"color: default; text-decoration: none;\">".format(self.link))
+            body.setText(body.text() + "<a href=\"{0}\" style=\"color: {1}; text-decoration: none;\">".format(self.link, self.color if self.color else "default"))
         body.setText(body.text() + self.desc)
         if self.link:
             body.setText(body.text() + "</a>")
@@ -67,7 +67,7 @@ class Entry:
                     color: {0};
                     background-color: {1};
                 }}""".format(
-                    self.color if self.color else "black",
+                    self.color if self.color else "default",
                     self.highlight if self.highlight else "none"
                 ))
 

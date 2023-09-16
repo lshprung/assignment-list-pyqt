@@ -11,7 +11,7 @@ def initDB():
     """
     Check for existing database. If it doesn't exist, build it
     """
-    if not os.path.exists(Globals.db_path):
+    if not os.path.exists(Globals.db_path) or not os.stat(Globals.db_path).st_size:
         createTables()
 
     loadFromTables()
@@ -20,6 +20,7 @@ def createTables():
     """
     Create database at a specified Globals.db_path
     """
+    print(Globals.db_path)
     database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
     database.setDatabaseName(Globals.db_path)
 

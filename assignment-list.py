@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QAction, QApplication, QGridLayout, QHBoxLayout, QLa
 from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtCore import QDate, Qt
 from config import Config
+from preferences_dialog import PreferencesDialog
 from add_group_form import addGroupForm
 from edit_group_form import editGroupForm
 from add_entry_form import addEntryForm
@@ -34,6 +35,16 @@ class AssignmentList(QMainWindow):
         edit_menu = menu_bar.addMenu("Edit")
         help_menu = menu_bar.addMenu("Help")
 
+        self.preferences_act = QAction("Preferences", self)
+        self.preferences_act.setShortcut("Alt+Return")
+        self.preferences_act.triggered.connect(PreferencesDialog)
+        file_menu.addAction(self.preferences_act)
+        # TODO implement reload of DB that works
+        self.reload_act = QAction("Reload", self)
+        self.reload_act.setShortcut("F5")
+        #self.reload_act.triggered.connect(self.reload)
+        file_menu.addAction(self.reload_act)
+        file_menu.addSeparator()
         exit_act = QAction("Exit", self)
         exit_act.setShortcut("Ctrl+Q")
         exit_act.triggered.connect(self.close)
