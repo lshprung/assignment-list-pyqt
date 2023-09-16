@@ -18,11 +18,12 @@ class Entry:
         bullet = QLabel()
         body = QLabel()
 
+        bullet.setFont(QFont("Arial", 11))
+
         body.setTextInteractionFlags(Qt.TextSelectableByMouse)
         body.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
-
-        bullet.setFont(QFont("Arial", 11))
         body.setFont(QFont("Arial", 11))
+        body.setWordWrap(True)
 
         if self.done:
             bullet.setText("\u2713 ")
