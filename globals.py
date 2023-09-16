@@ -1,3 +1,3 @@
 groups = []
 entries = []
-db_path = "/tmp/test.db"
+db_path = "./test.db"

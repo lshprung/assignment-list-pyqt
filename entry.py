@@ -20,8 +20,7 @@ class Entry:
 
         bullet.setFont(QFont("Arial", 11))
 
-        body.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        body.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
+        body.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse)
         body.setFont(QFont("Arial", 11))
         body.setWordWrap(True)
 
