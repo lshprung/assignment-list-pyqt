@@ -3,7 +3,8 @@ import sys
 import time
 from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QScrollArea, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QDate, QDateTime, Qt
+from PyQt5.QtCore import QDate, Qt
+from config import Config
 from add_group_form import addGroupForm
 from edit_group_form import editGroupForm
 from add_entry_form import addEntryForm
@@ -26,6 +27,7 @@ class AssignmentList(QMainWindow):
         self.setWindowTitle("Assignment List")
         self.createMenu()
         self.createToolbar()
+        Config()
         self.setupDB()
         self.displayWidgets()
         self.show()

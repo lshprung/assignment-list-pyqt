@@ -23,6 +23,14 @@ def createTables():
     database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
     database.setDatabaseName(Globals.db_path)
 
+    # Create database parent directory if necessary
+    if not os.path.exists(os.path.dirname(Globals.db_path)):
+        try:
+            os.mkdir(os.path.dirname(Globals.db_path))
+        except:
+            print("Unable to open data source file.")
+            sys.exit(1)
+
     if not database.open():
         print("Unable to open data source file.")
         sys.exit(1) # Error out. TODO consider throwing a dialog instead
