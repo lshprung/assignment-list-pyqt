@@ -15,10 +15,6 @@ DB = __import__("db_sqlite")
 class AssignmentList(QMainWindow):
     def __init__(self):
         super().__init__()
-        
-        # Class globals
-        self.renderGroupButtons = True
-        self.renderEntryButtons = True
 
         self.initializeUI()
 
@@ -36,7 +32,6 @@ class AssignmentList(QMainWindow):
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu("File")
         edit_menu = menu_bar.addMenu("Edit")
-        view_menu = menu_bar.addMenu("View")
         help_menu = menu_bar.addMenu("Help")
 
         exit_act = QAction("Exit", self)
@@ -51,16 +46,6 @@ class AssignmentList(QMainWindow):
         self.clean_hidden_act = QAction("Permanently Delete Removed Groups and Entries", self)
         self.clean_hidden_act.triggered.connect(self.cleanHidden)
         edit_menu.addAction(self.clean_hidden_act)
-
-        self.hide_entry_buttons = QAction("Hide Entry Buttons", self, checkable=True)
-        self.hide_entry_buttons.setShortcut("Ctrl+H")
-        self.hide_entry_buttons.triggered.connect(self.hideEntryButtons)
-        view_menu.addAction(self.hide_entry_buttons)
-        self.hide_group_buttons = QAction("Hide Group Buttons", self, checkable=True)
-        self.hide_group_buttons.setShortcut("Ctrl+Shift+H")
-        self.hide_group_buttons.triggered.connect(self.hideGroupButtons)
-        view_menu.addAction(self.hide_group_buttons)
-        
 
         about_act = QAction("About", self)
         about_act.triggered.connect(self.aboutDialog)
@@ -147,13 +132,6 @@ class AssignmentList(QMainWindow):
 
         menu.exec_(QCursor.pos())
 
-    def hideGroupButtons(self):
-        """
-        Set a flag to avoid rendering buttons under groups
-        """
-        self.renderGroupButtons = not self.renderGroupButtons
-        self.drawGroups()
-
     def addEntry(self, parent):
         """
         Open the 'addEntry' form
@@ -214,13 +192,6 @@ class AssignmentList(QMainWindow):
 
         menu.exec_(QCursor.pos())
 
-    def hideEntryButtons(self):
-        """
-        Set a flag to avoid rendering buttons under entries
-        """
-        self.renderEntryButtons = not self.renderEntryButtons
-        self.drawGroups()
-
     def cleanHidden(self):
         """
         Permanently delete removed groups and entries from db
@@ -268,28 +239,6 @@ class AssignmentList(QMainWindow):
             # Draw entries belonging to this group
             g_layout.addLayout(self.drawEntries(g.id))
 
-            # Include buttons at the bottom to edit the group
-            if self.renderGroupButtons:
-                buttons_hbox = QHBoxLayout()
-
-                add_entry_button = QPushButton()
-                add_entry_button.setText("Add Entry")
-                add_entry_button.clicked.connect((lambda id: lambda: self.addEntry(id))(g.id))
-                buttons_hbox.addWidget(add_entry_button)
-
-                edit_group_button = QPushButton()
-                edit_group_button.setText("Edit Group")
-                edit_group_button.clicked.connect((lambda id: lambda: self.editGroup(id))(g.id))
-                buttons_hbox.addWidget(edit_group_button)
-
-                del_group_button = QPushButton()
-                del_group_button.setText("Remove Group")
-                del_group_button.clicked.connect((lambda id: lambda: self.removeGroup(id))(g.id))
-                buttons_hbox.addWidget(del_group_button)
-
-                buttons_hbox.addStretch()
-                g_layout.addLayout(buttons_hbox)
-
             if g.column.lower() == "left":
                 column_left.addLayout(g_layout)
             else:
@@ -324,31 +273,6 @@ class AssignmentList(QMainWindow):
             e_layout.itemAt(1).widget().setToolTip("Right-Click for actions")
             e_layout.itemAt(1).widget().setContextMenuPolicy(Qt.CustomContextMenu)
             e_layout.itemAt(1).widget().customContextMenuRequested.connect((lambda id: lambda: self.entryContextMenu(id))(e.id))
-
-            # entry modifier buttons
-            if self.renderEntryButtons:
-                buttons_hbox = QHBoxLayout()
-
-                edit_entry_button = QPushButton()
-                edit_entry_button.setText("Edit Entry")
-                edit_entry_button.clicked.connect((lambda id: lambda: self.editEntry(id))(e.id))
-                buttons_hbox.addWidget(edit_entry_button)
-
-                mark_done_button = QPushButton()
-                if e.done:
-                    mark_done_button.setText("Not Done")
-                else:
-                    mark_done_button.setText("Done")
-                mark_done_button.clicked.connect((lambda id: lambda: self.toggleDoneEntry(id))(e.id))
-                buttons_hbox.addWidget(mark_done_button)
-
-                del_entry_button = QPushButton()
-                del_entry_button.setText("Remove Entry")
-                del_entry_button.clicked.connect((lambda id: lambda: self.removeEntry(id))(e.id))
-                buttons_hbox.addWidget(del_entry_button)
-
-                buttons_hbox.addStretch()
-                entries_vbox.addLayout(buttons_hbox)
 
         return entries_vbox
 
