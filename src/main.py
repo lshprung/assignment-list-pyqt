@@ -37,12 +37,12 @@ class AssignmentList(QMainWindow):
 
         self.preferences_act = QAction("Preferences", self)
         self.preferences_act.setShortcut("Alt+Return")
-        self.preferences_act.triggered.connect(PreferencesDialog)
+        self.preferences_act.triggered.connect(self.preferences)
         file_menu.addAction(self.preferences_act)
         # TODO implement reload of DB that works
-        self.reload_act = QAction("Reload [WIP]", self)
+        self.reload_act = QAction("Reload", self)
         self.reload_act.setShortcut("F5")
-        #self.reload_act.triggered.connect(self.reload)
+        self.reload_act.triggered.connect(self.reload)
         file_menu.addAction(self.reload_act)
         file_menu.addSeparator()
         exit_act = QAction("Exit", self)
@@ -203,6 +203,13 @@ class AssignmentList(QMainWindow):
 
         menu.exec_(QCursor.pos())
 
+    def preferences(self):
+        # TODO not sure if this is working exactly how I think it does, but it works
+        need_reload = PreferencesDialog()
+        print(need_reload)
+        if need_reload:
+            self.reload()
+
     def cleanHidden(self):
         """
         Permanently delete removed groups and entries from db
@@ -283,6 +290,11 @@ class AssignmentList(QMainWindow):
             e_layout.itemAt(1).widget().customContextMenuRequested.connect((lambda id: lambda: self.entryContextMenu(id))(e.id))
 
         return entries_vbox
+
+    def reload(self):
+        Config()
+        self.setupDB()
+        self.drawGroups()
 
     def aboutDialog(self):
         QMessageBox.about(self, "About Assignment List",

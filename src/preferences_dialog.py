@@ -41,6 +41,10 @@ class PreferencesDialog(QDialog):
         apply_button = QPushButton("Apply", self)
         apply_button.clicked.connect(self.apply)
         buttons_hbox.addWidget(apply_button)
+
+        reload_button = QPushButton("Reload", self)
+        reload_button.clicked.connect(self.reload)
+        buttons_hbox.addWidget(reload_button)
         
         main_layout.addLayout(buttons_hbox)
         self.setLayout(main_layout)
@@ -86,6 +90,12 @@ class PreferencesDialog(QDialog):
 
         self.config.updateConfig()
 
+    def reload(self):
+        """
+        Update, reload, and close the window
+        """
+        self.apply()
+        self.done(1)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

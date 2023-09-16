@@ -82,6 +82,7 @@ def loadFromTables():
     query = QSqlQuery()
 
     # Load groups
+    Globals.groups = [] # Reset local groups array
     query.exec_("SELECT * FROM groups")
     while query.next():
         record = query.record()
@@ -94,6 +95,7 @@ def loadFromTables():
                     record.field("hidden").value()))
 
     # Load entries
+    Globals.entries = [] # Reset local entries array
     query.exec_("SELECT * FROM entries")
     while query.next():
         record = query.record()
