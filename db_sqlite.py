@@ -172,7 +172,7 @@ def insertEntry(new_entry):
 
 def updateGroup(group):
     """
-    Update group by group_id
+    Update group by its id
     """
     database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
     database.setDatabaseName(Globals.db_path)
@@ -184,12 +184,50 @@ def updateGroup(group):
     query = QSqlQuery()
 
     query.prepare("""
-        UPDATE groups SET name = ?, column = ?, link = ? WHERE id = ?
+        UPDATE groups SET name = ?, column = ?, link = ?, hidden = ? WHERE id = ?
         """)
     query.addBindValue(group.name)
     query.addBindValue(group.column)
     query.addBindValue(group.link)
+    query.addBindValue(group.hidden)
     query.addBindValue(group.id)
+    query.exec_()
+
+    database.close()
+
+def updateEntry(entry):
+    """
+    Update entry by its id
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        UPDATE entries SET 
+            description = :desc, 
+            due_date = :due, 
+            alt_due_date = :alt_due, 
+            link = :link,
+            done = :done,
+            hidden = :hidden
+            WHERE id = :id
+        """)
+    query.bindValue(":desc", entry.desc)
+    query.bindValue(":due", "{0}-{1}-{2}".format( 
+                                                 entry.due.year(), 
+                                                 entry.due.month(), 
+                                                 entry.due.day()))
+    query.bindValue(":alt_due", entry.due_alt)
+    query.bindValue(":link", entry.link)
+    query.bindValue(":done", entry.done)
+    query.bindValue(":hidden", entry.hidden)
+    query.bindValue(":id", entry.id)
     query.exec_()
 
     database.close()

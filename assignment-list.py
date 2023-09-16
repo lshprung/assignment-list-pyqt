@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt
 from add_group_form import addGroupForm
 from edit_group_form import editGroupForm
 from add_entry_form import addEntryForm
+from edit_entry_form import editEntryForm
 Globals = __import__("globals")
 DB = __import__("db_sqlite")
 
@@ -92,6 +93,13 @@ class AssignmentList(QMainWindow):
         self.create_edit_group_dialog = editGroupForm(id)
         self.drawGroups()
 
+    def editEntry(self, id):
+        """
+        Open the 'editEntry' form
+        """
+        self.create_edit_entry_dialog = editEntryForm(id)
+        self.drawGroups()
+
     def removeGroup(self, id):
         """
         Delete a group with a given id
@@ -161,10 +169,10 @@ class AssignmentList(QMainWindow):
             add_entry_button.clicked.connect((lambda id: lambda: self.addEntry(id))(g.id))
             buttons_hbox.addWidget(add_entry_button)
 
-            add_entry_button = QPushButton()
-            add_entry_button.setText("Edit Group")
-            add_entry_button.clicked.connect((lambda id: lambda: self.editGroup(id))(g.id))
-            buttons_hbox.addWidget(add_entry_button)
+            edit_group_button = QPushButton()
+            edit_group_button.setText("Edit Group")
+            edit_group_button.clicked.connect((lambda id: lambda: self.editGroup(id))(g.id))
+            buttons_hbox.addWidget(edit_group_button)
 
             del_group_button = QPushButton()
             del_group_button.setText("Remove Group")
@@ -186,7 +194,6 @@ class AssignmentList(QMainWindow):
         self.groups_hbox.addLayout(column_right)
         self.groups_hbox.addStretch()
 
-    # Implementation should be moved here from group.py if possible
     def drawEntries(self, group_id):
         """
         Redraw the entries of a specific group
@@ -205,6 +212,11 @@ class AssignmentList(QMainWindow):
 
             # entry modifier buttons
             buttons_hbox = QHBoxLayout()
+
+            edit_entry_button = QPushButton()
+            edit_entry_button.setText("Edit Entry")
+            edit_entry_button.clicked.connect((lambda id: lambda: self.editEntry(id))(e.id))
+            buttons_hbox.addWidget(edit_entry_button)
 
             del_entry_button = QPushButton()
             del_entry_button.setText("Remove Entry")

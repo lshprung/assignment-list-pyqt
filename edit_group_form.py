@@ -3,13 +3,13 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QFormLayout, QHBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
-from add_entry_form import Globals
+Globals = __import__("globals")
 from group import Group
 DB = __import__("db_sqlite")
 
 class editGroupForm(QDialog):
     """
-    Implemented so that it can be used for adding and editing groups
+    Form to edit/update a group
     """
     def __init__(self, id):
         self.id = id
@@ -80,7 +80,7 @@ class editGroupForm(QDialog):
 
         # Update global variables
         Globals.groups = list(filter(lambda g: g.id != self.id, Globals.groups))
-        Globals.groups.append(Group(self.id, name_text, column_text, link_text))
+        Globals.groups.append(Group(self.id, name_text, column_text, link_text, group.hidden))
         self.close()
 
 if __name__ == "__main__":
