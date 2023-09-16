@@ -5,9 +5,8 @@ from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWin
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from add_group_form import addGroupForm
+from edit_group_form import editGroupForm
 from add_entry_form import addEntryForm
-from entry import Entry
-from group import Group
 Globals = __import__("globals")
 
 class AssignmentList(QMainWindow):
@@ -83,6 +82,23 @@ class AssignmentList(QMainWindow):
         if old_count != len(Globals.groups):
             self.drawGroups()
 
+    def editGroup(self, id):
+        """
+        Open the 'editGroup' form
+        """
+        self.create_edit_group_dialog = editGroupForm(id)
+        self.drawGroups()
+
+    def removeGroup(self, id):
+        """
+        Delete a group with a given id
+        """
+        # TODO might want to add a warning
+        # TODO might want to make part of the a destructor in the Group class
+        Globals.entries = list(filter(lambda e: e.parent_id != id, Globals.entries))
+        Globals.groups = list(filter(lambda g: g.id != id, Globals.groups))
+        self.drawGroups()
+
     def addEntry(self, parent):
         """
         Open the 'addEntry' form
@@ -92,6 +108,12 @@ class AssignmentList(QMainWindow):
         if old_count != len(Globals.entries):
             self.drawGroups() # TODO see if we can do this with only redrawing a single group
 
+    def removeEntry(self, id):
+        """
+        Delete an entry with a given id
+        """
+        # TODO implement when db is implemented, and entries have ids
+        pass
 
     def drawGroups(self):
         """
@@ -116,10 +138,22 @@ class AssignmentList(QMainWindow):
             # Include buttons at the bottom to edit the group
             g_layout = g.buildLayout()
             buttons_hbox = QHBoxLayout()
+
             add_entry_button = QPushButton()
             add_entry_button.setText("Add Entry")
             add_entry_button.clicked.connect((lambda id: lambda: self.addEntry(id))(g.id))
             buttons_hbox.addWidget(add_entry_button)
+
+            add_entry_button = QPushButton()
+            add_entry_button.setText("Edit Group")
+            add_entry_button.clicked.connect((lambda id: lambda: self.editGroup(id))(g.id))
+            buttons_hbox.addWidget(add_entry_button)
+
+            del_group_button = QPushButton()
+            del_group_button.setText("Remove Group")
+            del_group_button.clicked.connect((lambda id: lambda: self.removeGroup(id))(g.id))
+            buttons_hbox.addWidget(del_group_button)
+
             buttons_hbox.addStretch()
             g_layout.addLayout(buttons_hbox)
             if g.column.lower() == "left":

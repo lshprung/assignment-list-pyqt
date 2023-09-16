@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import sys
 from PyQt5.QtWidgets import QApplication, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
 from PyQt5.QtGui import QFont

@@ -1,7 +1,6 @@
-import datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QLabel, QVBoxLayout
 Globals = __import__("globals")
 
 class Group:
@@ -36,7 +35,6 @@ class Group:
         """
         Retrieve this group's entries
         """
-        # TODO this should be pulling from a database
         output = []
         for e in Globals.entries:
             if e.parent_id == self.id:

@@ -6,37 +6,42 @@ from PyQt5.QtCore import Qt
 from add_entry_form import Globals
 from group import Group
 
-class addGroupForm(QDialog):
+class editGroupForm(QDialog):
     """
     Implemented so that it can be used for adding and editing groups
     """
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         super().__init__()
         self.initializeUI()
 
     def initializeUI(self):
         self.resize(400, 1)
-        self.setWindowTitle("Add Group")
+        self.setWindowTitle("Edit Group")
         self.displayWidgets()
         self.exec()
 
     def displayWidgets(self):
         group_form_layout = QFormLayout()
+        group = list(filter(lambda g: g.id == self.id, Globals.groups))[0]
 
-        title = QLabel("Add Group")
+        title = QLabel("Edit Group")
         title.setFont(QFont("Arial", 18))
         title.setAlignment(Qt.AlignCenter)
         group_form_layout.addRow(title)
 
-        self.new_group_name = QLineEdit()
-        group_form_layout.addRow("Name:", self.new_group_name)
+        self.group_name = QLineEdit()
+        self.group_name.setText(group.name)
+        group_form_layout.addRow("Name:", self.group_name)
 
-        self.new_group_column = QComboBox()
-        self.new_group_column.addItems(["Left", "Right"])
-        group_form_layout.addRow("Column:", self.new_group_column)
+        self.group_column = QComboBox()
+        self.group_column.addItems(["Left", "Right"])
+        self.group_column.setCurrentIndex(0 if group.column.lower() == "left" else 1)
+        group_form_layout.addRow("Column:", self.group_column)
 
-        self.new_group_link = QLineEdit() # TODO see if there is a widget specifically for URLs
-        group_form_layout.addRow("Link:", self.new_group_link)
+        self.group_link = QLineEdit() # TODO see if there is a widget specifically for URLs
+        self.group_link.setText(group.link)
+        group_form_layout.addRow("Link:", self.group_link)
 
         # Submit and cancel buttons
         buttons_h_box = QHBoxLayout()
@@ -54,9 +59,9 @@ class addGroupForm(QDialog):
         self.setLayout(group_form_layout)
 
     def handleSubmit(self):
-        name_text = self.new_group_name.text()
-        column_text = self.new_group_column.currentText()
-        link_text = self.new_group_link.text()
+        name_text = self.group_name.text()
+        column_text = self.group_column.currentText()
+        link_text = self.group_link.text()
 
         if not name_text:
             QMessageBox.warning(self, "Error Message",
@@ -66,11 +71,11 @@ class addGroupForm(QDialog):
             return
 
         # TODO do the database stuff (this will allow us to get the id)
-        Globals.groups.append(Group(Globals.max_group_id, name_text, column_text, link_text))
-        Globals.max_group_id = Globals.max_group_id + 1
+        Globals.groups = list(filter(lambda g: g.id != self.id, Globals.groups))
+        Globals.groups.append(Group(self.id, name_text, column_text, link_text))
         self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = addGroupForm()
+    window = editGroupForm()
     sys.exit(app.exec_())
