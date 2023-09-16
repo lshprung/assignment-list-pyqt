@@ -150,17 +150,21 @@ class AssignmentList(QMainWindow):
         """
         Load groups data
         """
-        Globals.groups.append(Group(1, "test1", "left"))
-        Globals.groups.append(Group(2, "test2", "left"))
-        Globals.groups.append(Group(3, "test3", "right"))
-        Globals.groups.append(Group(4, "test4", "right"))
+        # TODO
+        #Globals.groups.append(Group(1, "test1", "left"))
+        #Globals.groups.append(Group(2, "test2", "left"))
+        #Globals.groups.append(Group(3, "test3", "right"))
+        #Globals.groups.append(Group(4, "test4", "right"))
+        pass
 
     def load_entries(self):
         """
         Load entries data
         """
-        Globals.entries.append(Entry(1, "test1-task1"))
-        Globals.entries.append(Entry(2, "test2-task1"))
+        # TODO
+        #Globals.entries.append(Entry(1, "test1-task1"))
+        #Globals.entries.append(Entry(2, "test2-task1"))
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
