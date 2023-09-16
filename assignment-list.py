@@ -3,6 +3,7 @@ import sys
 import time
 from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
 from add_group_form import addGroupForm
 from group import Group
 
@@ -50,6 +51,7 @@ class AssignmentList(QMainWindow):
 
         title = QLabel(time.strftime("%A, %b %d %Y"))
         title.setFont(QFont("Arial", 17))
+        title.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         title_h_box = QHBoxLayout()
         title_h_box.addStretch()
