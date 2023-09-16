@@ -44,9 +44,13 @@ class addEntryForm(QDialog):
         entry_form_layout.addRow("Link:", self.new_entry_link)
 
         # TODO:
-            # color
-            # highlight
             # depends
+
+        self.new_entry_color = QLineEdit()
+        entry_form_layout.addRow("Color:", self.new_entry_color)
+
+        self.new_entry_highlight = QLineEdit()
+        entry_form_layout.addRow("Highlight:", self.new_entry_highlight)
 
         # Submit and cancel buttons
         buttons_h_box = QHBoxLayout()
@@ -71,6 +75,8 @@ class addEntryForm(QDialog):
             due_text = self.new_entry_due.date() # due_text is a QDate
         due_alt_text = self.new_entry_due_alt.text()
         link_text = self.new_entry_link.text()
+        color_text = self.new_entry_color.text()
+        highlight_text = self.new_entry_highlight.text()
 
         if not desc_text:
             QMessageBox.warning(self, "Error Message",
@@ -79,8 +85,8 @@ class addEntryForm(QDialog):
                                 QMessageBox.Close)
             return
 
-        new_id = DB.insertEntry(Entry(0, parent, desc_text, due_text, due_alt_text, link_text))
-        Globals.entries.append(Entry(new_id, parent, desc_text, due_text, due_alt_text, link_text))
+        new_id = DB.insertEntry(Entry(0, parent, desc_text, due_text, due_alt_text, link_text, color_text, highlight_text))
+        Globals.entries.append(Entry(new_id, parent, desc_text, due_text, due_alt_text, link_text, color_text, highlight_text))
         self.close()
 
 if __name__ == "__main__":

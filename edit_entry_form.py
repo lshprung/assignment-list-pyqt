@@ -57,6 +57,14 @@ class editEntryForm(QDialog):
         self.entry_link.setText(entry.link)
         entry_form_layout.addRow("Link:", self.entry_link)
 
+        self.entry_color = QLineEdit()
+        self.entry_color.setText(entry.color)
+        entry_form_layout.addRow("Color:", self.entry_color)
+
+        self.entry_highlight = QLineEdit()
+        self.entry_highlight.setText(entry.highlight)
+        entry_form_layout.addRow("Highlight:", self.entry_highlight)
+
         # Submit and cancel buttons
         buttons_h_box = QHBoxLayout()
         buttons_h_box.addStretch()
@@ -80,6 +88,8 @@ class editEntryForm(QDialog):
             due_text = "" # due is unchecked
         due_alt_text = self.entry_due_alt.text()
         link_text = self.entry_link.text()
+        color_text = self.entry_color.text()
+        highlight_text = self.entry_highlight.text()
 
         if not desc_text:
             QMessageBox.warning(self, "Error Message",
@@ -94,11 +104,13 @@ class editEntryForm(QDialog):
         entry.due = due_text
         entry.due_alt = due_alt_text
         entry.link = link_text
+        entry.color = color_text
+        entry.highlight = highlight_text
         DB.updateEntry(entry)
 
         # Update global variables
         Globals.entries = list(filter(lambda e: e.id != self.id, Globals.entries))
-        Globals.entries.append(Entry(self.id, entry.parent_id, desc_text, due_text, due_alt_text, link_text, entry.done, entry.hidden))
+        Globals.entries.append(Entry(self.id, entry.parent_id, desc_text, due_text, due_alt_text, link_text, color_text, highlight_text, entry.done, entry.hidden))
         self.close()
 
 if __name__ == "__main__":

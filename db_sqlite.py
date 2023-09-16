@@ -58,6 +58,8 @@ def createTables():
             due_date TEXT DEFAULT NULL,
             alt_due_date VARCHAR(255) DEFAULT NULL,
             link VARCHAR(255) DEFAULT NULL,
+            color VARCHAR(255) DEFAULT NULL,
+            highlight VARCHAR(255) DEFAULT NULL,
             done TINYINT(1) DEFAULT FALSE,
             hidden TINYINT(1) DEFAULT FALSE
         )
@@ -108,6 +110,8 @@ def loadFromTables():
                     due_date,
                     record.field("alt_due_date").value(),
                     record.field("link").value(),
+                    record.field("color").value(),
+                    record.field("highlight").value(),
                     record.field("done").value(),
                     record.field("hidden").value()))
 
@@ -158,7 +162,7 @@ def insertEntry(new_entry):
     query = QSqlQuery()
 
     query.prepare("""
-        INSERT INTO entries (parent_id, description, due_date, alt_due_date, link) VALUES (:p_id, :desc, :due, :alt_due, :link)
+        INSERT INTO entries (parent_id, description, due_date, alt_due_date, link, color, highlight) VALUES (:p_id, :desc, :due, :alt_due, :link, :color, :highlight)
         """)
     query.bindValue(":p_id", new_entry.parent_id)
     query.bindValue(":desc", new_entry.desc)
@@ -171,6 +175,8 @@ def insertEntry(new_entry):
         query.bindValue(":due", "")
     query.bindValue(":alt_due", new_entry.due_alt)
     query.bindValue(":link", new_entry.link)
+    query.bindValue(":color", new_entry.color)
+    query.bindValue(":highlight", new_entry.highlight)
     success = query.exec_()
     # DEBUG
     #print(query.lastError().text())
@@ -230,6 +236,8 @@ def updateEntry(entry):
             due_date = :due, 
             alt_due_date = :alt_due, 
             link = :link,
+            color = :color,
+            highlight = :highlight,
             done = :done,
             hidden = :hidden
             WHERE id = :id
@@ -244,6 +252,8 @@ def updateEntry(entry):
         query.bindValue(":due", "")
     query.bindValue(":alt_due", entry.due_alt)
     query.bindValue(":link", entry.link)
+    query.bindValue(":color", entry.color)
+    query.bindValue(":highlight", entry.highlight)
     query.bindValue(":done", entry.done)
     query.bindValue(":hidden", entry.hidden)
     query.bindValue(":id", entry.id)

@@ -3,13 +3,15 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
 
 class Entry:
-    def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", done = False, hidden = False):
+    def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", color = "", highlight = "", done = False, hidden = False):
         self.id = id
         self.parent_id = parent_id
         self.desc = desc
         self.due = due
         self.due_alt = due_alt
         self.link = link
+        self.color = color
+        self.highlight = highlight
         self.done = done
         self.hidden = hidden
 
@@ -31,11 +33,6 @@ class Entry:
                     color: green;
                 }
             """)
-            body.setStyleSheet("""
-                QLabel{
-                    color: green;
-                }
-            """)
         else:
             bullet.setText("- ")
         output.addWidget(bullet)
@@ -44,7 +41,7 @@ class Entry:
             body.setText("{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
         if self.link:
             body.setOpenExternalLinks(True)
-            body.setText(body.text() + "<a href=\"{0}\">".format(self.link))
+            body.setText(body.text() + "<a href=\"{0}\" style=\"color: default; text-decoration: none;\">".format(self.link))
         body.setText(body.text() + self.desc)
         if self.link:
             body.setText(body.text() + "</a>")
@@ -56,5 +53,20 @@ class Entry:
             font = body.font()
             font.setStrikeOut(True)
             body.setFont(font)
+            body.setStyleSheet("""
+                QLabel{
+                    color: green;
+                }
+            """)
+
+        else:
+            body.setStyleSheet("""
+                QLabel{{
+                    color: {0};
+                    background-color: {1};
+                }}""".format(
+                    self.color if self.color else "black",
+                    self.highlight if self.highlight else "none"
+                ))
 
         return output
