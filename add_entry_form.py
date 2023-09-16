@@ -50,7 +50,7 @@ class addEntryForm(QDialog):
         close_button.clicked.connect(self.close)
         buttons_h_box.addWidget(close_button)
         submit_button = QPushButton("Submit")
-        submit_button.clicked.connect(lambda: self.handleSubmit(parent)) # TODO connect this to a real method
+        submit_button.clicked.connect(lambda: self.handleSubmit(parent))
         buttons_h_box.addWidget(submit_button)
         buttons_h_box.addStretch()
 

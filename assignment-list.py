@@ -143,8 +143,12 @@ class AssignmentList(QMainWindow):
             if g.hidden:
                 continue
 
-            # Include buttons at the bottom to edit the group
             g_layout = g.buildLayout()
+            
+            # Draw entries belonging to this group
+            g_layout.addLayout(self.drawEntries(g.id))
+
+            # Include buttons at the bottom to edit the group
             buttons_hbox = QHBoxLayout()
 
             add_entry_button = QPushButton()
@@ -178,11 +182,19 @@ class AssignmentList(QMainWindow):
         self.groups_hbox.addStretch()
 
     # Implementation should be moved here from group.py if possible
-    def drawEntries(self):
+    def drawEntries(self, group_id):
         """
         Redraw the entries of a specific group
         """
-        pass
+        entries = list(filter(lambda e: e.parent_id == group_id, Globals.entries))
+        entries_vbox = QVBoxLayout()
+        entries_vbox.setContentsMargins(5, 0, 0, 0)
+
+        for e in entries:
+            entries_vbox.addWidget(e.buildLayout())
+            # TODO find a good way to add modifier buttons
+
+        return entries_vbox
 
     def aboutDialog(self):
         QMessageBox.about(self, "About Assignment List",

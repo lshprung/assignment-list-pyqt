@@ -22,23 +22,4 @@ class Group:
         name.setFont(name_font)
         output.addWidget(name)
 
-        entries = self.getEntriesFromGroup()
-        entries_vbox = QVBoxLayout()
-        entries_vbox.setContentsMargins(5, 0, 0, 0)
-
-        for e in entries:
-            entries_vbox.addWidget(e.buildLayout())
-        output.addLayout(entries_vbox)
-
-        return output
-
-    def getEntriesFromGroup(self):
-        """
-        Retrieve this group's entries
-        """
-        output = []
-        for e in Globals.entries:
-            if e.parent_id == self.id:
-                output.append(e)
-
         return output
