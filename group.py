@@ -4,11 +4,12 @@ from PyQt5.QtWidgets import QLabel, QVBoxLayout
 Globals = __import__("globals")
 
 class Group:
-    def __init__(self, id, name, column = "left", link = ""):
+    def __init__(self, id, name, column = "left", link = "", hidden = False):
         self.id = id
         self.name = name
         self.column = column
         self.link = link
+        self.hidden = hidden
 
     def buildLayout(self):
         output = QVBoxLayout()

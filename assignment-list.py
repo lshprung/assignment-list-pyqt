@@ -98,6 +98,7 @@ class AssignmentList(QMainWindow):
         """
         # TODO might want to add a warning
         # TODO might want to make part of the a destructor in the Group class
+        DB.removeGroup(id)
         Globals.entries = list(filter(lambda e: e.parent_id != id, Globals.entries))
         Globals.groups = list(filter(lambda g: g.id != id, Globals.groups))
         self.drawGroups()
@@ -138,6 +139,10 @@ class AssignmentList(QMainWindow):
         column_right = QVBoxLayout()
 
         for g in Globals.groups:
+            # skip if this group is set to hidden
+            if g.hidden:
+                continue
+
             # Include buttons at the bottom to edit the group
             g_layout = g.buildLayout()
             buttons_hbox = QHBoxLayout()

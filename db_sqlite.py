@@ -79,7 +79,8 @@ def loadFromTables():
                     record.field("id").value(), 
                     record.field("name").value(), 
                     record.field("column").value(),
-                    record.field("link").value()))
+                    record.field("link").value(),
+                    record.field("hidden").value()))
 
     # Load entries
     query.exec_("SELECT * FROM entries")
@@ -168,3 +169,34 @@ def insertEntry(new_entry):
     database.close()
 
     return output
+
+def removeGroup(group_id):
+    """
+    Remove a group by id from the database 
+    (actually set hidden to true, don't permanently delete it)
+    """
+
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    # First, set entries to hidden
+    query.prepare("""
+        UPDATE entries SET hidden = 1 WHERE parent_id = ?
+        """)
+    query.addBindValue(group_id)
+    query.exec_()
+
+    # Now, set the group to hidden
+    query.prepare("""
+        UPDATE groups SET hidden = 1 WHERE id = ?
+        """)
+    query.addBindValue(group_id)
+    query.exec_()
+
+    database.close()
