@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog, QFormLayout, QHBoxLayout, QLineEdit, QPushButton, QTabWidget, QVBoxLayout, QWidget
-from config import Config
+from src.config import Config
 
 class PreferencesDialog(QDialog):
     """

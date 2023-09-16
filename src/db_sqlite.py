@@ -3,9 +3,9 @@ import sys
 from time import strptime
 from PyQt5.QtCore import QDate
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
-Globals = __import__("globals")
-from group import Group
-from entry import Entry
+import src.globals as Globals
+from src.group import Group
+from src.entry import Entry
 
 def initDB():
     """

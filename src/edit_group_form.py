@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QFormLayout, QHBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
-Globals = __import__("globals")
-from group import Group
-DB = __import__("db_sqlite")
+import src.globals as Globals
+from src.group import Group
+import src.db_sqlite as DB
 
 class editGroupForm(QDialog):
     """

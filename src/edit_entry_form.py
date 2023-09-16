@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QApplication, QCheckBox, QDateTimeEdit, QDialog, QFo
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QDate, Qt
 
-Globals = __import__("globals")
-from entry import Entry
-DB = __import__("db_sqlite")
+import src.globals as Globals
+from src.entry import Entry
+import src.db_sqlite as DB
 
 class editEntryForm(QDialog):
     """

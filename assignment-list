@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+from __future__ import absolute_import
+import sys
+
+from PyQt5.QtWidgets import QApplication
+from src.main import AssignmentList as main
+
+app = QApplication(sys.argv)
+window = main()
+sys.exit(app.exec_())

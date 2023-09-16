@@ -4,14 +4,14 @@ import time
 from PyQt5.QtWidgets import QAction, QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtCore import QDate, Qt
-from config import Config
-from preferences_dialog import PreferencesDialog
-from add_group_form import addGroupForm
-from edit_group_form import editGroupForm
-from add_entry_form import addEntryForm
-from edit_entry_form import editEntryForm
-Globals = __import__("globals")
-DB = __import__("db_sqlite")
+from src.config import Config
+from src.preferences_dialog import PreferencesDialog
+from src.add_group_form import addGroupForm
+from src.edit_group_form import editGroupForm
+from src.add_entry_form import addEntryForm
+from src.edit_entry_form import editEntryForm
+import src.globals as Globals
+import src.db_sqlite as DB
 
 class AssignmentList(QMainWindow):
     def __init__(self):

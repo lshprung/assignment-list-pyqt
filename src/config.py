@@ -7,7 +7,7 @@ import configparser
 import os
 import sys
 
-Globals = __import__("globals")
+import src.globals as Globals
 
 class Config():
     def __init__(self):
