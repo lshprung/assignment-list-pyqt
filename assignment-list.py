@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QToolBar, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtCore import QDate, Qt
 from config import Config
@@ -75,13 +75,13 @@ class AssignmentList(QMainWindow):
         title_h_box.addWidget(title)
         title_h_box.addStretch()
 
-        self.groups_hbox = QHBoxLayout()
-        self.groups_hbox.setContentsMargins(20, 5, 20, 5)
+        self.groups_layout = QGridLayout()
+        self.groups_layout.setContentsMargins(20, 5, 20, 5)
         self.drawGroups()
 
         v_box = QVBoxLayout()
         v_box.addLayout(title_h_box)
-        v_box.addLayout(self.groups_hbox)
+        v_box.addLayout(self.groups_layout)
         v_box.addStretch()
 
         main_widget.setLayout(v_box)
@@ -201,7 +201,7 @@ class AssignmentList(QMainWindow):
 
     def drawGroups(self):
         """
-        Redraw the groups_hbox
+        Redraw the groups_layout
         """
         # Remove all children from layout
         def recursiveClear(layout):
@@ -212,7 +212,7 @@ class AssignmentList(QMainWindow):
                 elif child.layout():
                     recursiveClear(child)
 
-        recursiveClear(self.groups_hbox)
+        recursiveClear(self.groups_layout)
 
         # Sort the groups
         Globals.groups = sorted(Globals.groups, key=lambda g: g.id)
@@ -247,10 +247,8 @@ class AssignmentList(QMainWindow):
         column_left.addStretch()
         column_right.addStretch()
 
-        self.groups_hbox.addLayout(column_left)
-        self.groups_hbox.addStretch()
-        self.groups_hbox.addLayout(column_right)
-        self.groups_hbox.addStretch()
+        self.groups_layout.addLayout(column_left, 0, 0)
+        self.groups_layout.addLayout(column_right, 0, 1)
 
     def drawEntries(self, group_id):
         """
