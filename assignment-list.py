@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QPushButton, QScrollArea, QToolBar, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtCore import QDate, Qt
 from config import Config

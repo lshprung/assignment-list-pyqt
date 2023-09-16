@@ -26,6 +26,16 @@ class Entry:
 
         if self.done:
             bullet.setText("\u2713 ")
+            bullet.setStyleSheet("""
+                QLabel{
+                    color: green;
+                }
+            """)
+            body.setStyleSheet("""
+                QLabel{
+                    color: green;
+                }
+            """)
         else:
             bullet.setText("- ")
         output.addWidget(bullet)
