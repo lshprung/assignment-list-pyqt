@@ -2,11 +2,11 @@ import datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout
-from add_entry_form import addEntryForm
-from entry import Entry
+Globals = __import__("globals")
 
 class Group:
-    def __init__(self, name, column = "left", link = ""):
+    def __init__(self, id, name, column = "left", link = ""):
+        self.id = id
         self.name = name
         self.column = column
         self.link = link
@@ -30,25 +30,7 @@ class Group:
             entries_vbox.addWidget(e.buildLayout())
         output.addLayout(entries_vbox)
 
-        # Include buttons at the bottom to edit the group
-        buttons_hbox = QHBoxLayout()
-
-        add_entry_button = QPushButton()
-        add_entry_button.setText("Add Entry")
-        add_entry_button.clicked.connect(self.addEntry)
-        buttons_hbox.addWidget(add_entry_button)
-        buttons_hbox.addStretch()
-
-        output.addLayout(buttons_hbox)
-
         return output
-
-    def addEntry(self):
-        """
-        Open the 'addEntry' form
-        """
-        self.create_new_entry_dialog = addEntryForm()
-        self.create_new_entry_dialog.show()
 
     def getEntriesFromGroup(self):
         """
@@ -56,7 +38,8 @@ class Group:
         """
         # TODO this should be pulling from a database
         output = []
-        output.append(Entry("yeet"))
-        output.append(Entry("bruh", datetime.date(2023, 12, 25)))
+        for e in Globals.entries:
+            if e.parent_id == self.id:
+                output.append(e)
 
         return output

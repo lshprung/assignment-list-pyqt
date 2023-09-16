@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 import sys
-from PyQt5.QtWidgets import QApplication, QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
+from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
-class addGroupForm(QWidget):
+from add_entry_form import Globals
+from group import Group
+
+class addGroupForm(QDialog):
     def __init__(self):
         super().__init__()
         self.initializeUI()
@@ -13,7 +16,7 @@ class addGroupForm(QWidget):
         self.resize(400, 1)
         self.setWindowTitle("Add Group")
         self.displayWidgets()
-        self.show()
+        self.exec()
 
     def displayWidgets(self):
         group_form_layout = QFormLayout()
@@ -23,15 +26,15 @@ class addGroupForm(QWidget):
         title.setAlignment(Qt.AlignCenter)
         group_form_layout.addRow(title)
 
-        new_group_name = QLineEdit()
-        group_form_layout.addRow("Name:", new_group_name)
+        self.new_group_name = QLineEdit()
+        group_form_layout.addRow("Name:", self.new_group_name)
 
-        new_group_column = QComboBox()
-        new_group_column.addItems(["Left", "Right"])
-        group_form_layout.addRow("Column:", new_group_column)
+        self.new_group_column = QComboBox()
+        self.new_group_column.addItems(["Left", "Right"])
+        group_form_layout.addRow("Column:", self.new_group_column)
 
-        new_group_link = QLineEdit() # TODO see if there is a widget specifically for URLs
-        group_form_layout.addRow("Link:", new_group_link)
+        self.new_group_link = QLineEdit() # TODO see if there is a widget specifically for URLs
+        group_form_layout.addRow("Link:", self.new_group_link)
 
         # Submit and cancel buttons
         buttons_h_box = QHBoxLayout()
@@ -40,13 +43,30 @@ class addGroupForm(QWidget):
         close_button.clicked.connect(self.close)
         buttons_h_box.addWidget(close_button)
         submit_button = QPushButton("Submit")
-        submit_button.clicked.connect(self.close) # TODO connect this to a real method
+        submit_button.clicked.connect(self.handleSubmit) # TODO connect this to a real method
         buttons_h_box.addWidget(submit_button)
         buttons_h_box.addStretch()
 
         group_form_layout.addRow(buttons_h_box)
 
         self.setLayout(group_form_layout)
+
+    def handleSubmit(self):
+        name_text = self.new_group_name.text()
+        column_text = self.new_group_column.currentText()
+        link_text = self.new_group_link.text()
+
+        if not name_text:
+            QMessageBox.warning(self, "Error Message",
+                                "Name cannot be blank",
+                                QMessageBox.Close,
+                                QMessageBox.Close)
+            return
+
+        # TODO do the database stuff (this will allow us to get the id)
+        Globals.groups.append(Group(Globals.max_group_id, name_text, column_text, link_text))
+        Globals.max_group_id = Globals.max_group_id + 1
+        self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

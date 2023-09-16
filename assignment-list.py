@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QToolBar, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from add_group_form import addGroupForm
+from add_entry_form import addEntryForm
+from entry import Entry
 from group import Group
+Globals = __import__("globals")
 
 class AssignmentList(QMainWindow):
     def __init__(self):
@@ -59,6 +62,9 @@ class AssignmentList(QMainWindow):
         title_h_box.addStretch()
 
         self.load_groups()
+        self.load_entries() # TODO placeholder, this will eventually be moved to group.py
+        self.groups_hbox = QHBoxLayout()
+        self.groups_hbox.setContentsMargins(20, 5, 20, 5)
         self.drawGroups()
 
         v_box = QVBoxLayout()
@@ -72,26 +78,54 @@ class AssignmentList(QMainWindow):
         """
         Open the 'addGroup' form
         """
+        old_count = len(Globals.groups)
         self.create_new_group_dialog = addGroupForm()
-        self.create_new_group_dialog.show()
+        if old_count != len(Globals.groups):
+            self.drawGroups()
+
+    def addEntry(self, parent):
+        """
+        Open the 'addEntry' form
+        """
+        old_count = len(Globals.entries)
+        self.create_new_entry_dialog = addEntryForm(parent)
+        if old_count != len(Globals.entries):
+            self.drawGroups() # TODO see if we can do this with only redrawing a single group
+
 
     def drawGroups(self):
         """
         Redraw the groups_hbox
         """
-        # Reset layout
-        self.groups_hbox = QHBoxLayout()
-        self.groups_hbox.setContentsMargins(20, 5, 20, 5)
+        # Remove all children from layout
+        def recursiveClear(layout):
+            while layout.count():
+                child = layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+                elif child.layout():
+                    recursiveClear(child)
+
+        recursiveClear(self.groups_hbox)
 
         # Create columns as vertical boxes
         column_left = QVBoxLayout()
         column_right = QVBoxLayout()
 
-        for g in self.groups:
-            if g.column == "left":
-                column_left.addLayout(g.buildLayout())
+        for g in Globals.groups:
+            # Include buttons at the bottom to edit the group
+            g_layout = g.buildLayout()
+            buttons_hbox = QHBoxLayout()
+            add_entry_button = QPushButton()
+            add_entry_button.setText("Add Entry")
+            add_entry_button.clicked.connect((lambda id: lambda: self.addEntry(id))(g.id))
+            buttons_hbox.addWidget(add_entry_button)
+            buttons_hbox.addStretch()
+            g_layout.addLayout(buttons_hbox)
+            if g.column.lower() == "left":
+                column_left.addLayout(g_layout)
             else:
-                column_right.addLayout(g.buildLayout())
+                column_right.addLayout(g_layout)
 
         column_left.addStretch()
         column_right.addStretch()
@@ -101,6 +135,13 @@ class AssignmentList(QMainWindow):
         self.groups_hbox.addLayout(column_right)
         self.groups_hbox.addStretch()
 
+    # Implementation should be moved here from group.py if possible
+    def drawEntries(self):
+        """
+        Redraw the entries of a specific group
+        """
+        pass
+
     def aboutDialog(self):
         QMessageBox.about(self, "About Assignment List",
                           "Created by Louie S. - 2023")
@@ -109,12 +150,17 @@ class AssignmentList(QMainWindow):
         """
         Load groups data
         """
-        # TODO this is debug for now, with fixed values
-        self.groups = []
-        self.groups.append(Group("test1", "left"))
-        self.groups.append(Group("test2", "left"))
-        self.groups.append(Group("test3", "right"))
-        self.groups.append(Group("test4", "right"))
+        Globals.groups.append(Group(1, "test1", "left"))
+        Globals.groups.append(Group(2, "test2", "left"))
+        Globals.groups.append(Group(3, "test3", "right"))
+        Globals.groups.append(Group(4, "test4", "right"))
+
+    def load_entries(self):
+        """
+        Load entries data
+        """
+        Globals.entries.append(Entry(1, "test1-task1"))
+        Globals.entries.append(Entry(2, "test2-task1"))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

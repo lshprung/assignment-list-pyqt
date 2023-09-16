@@ -4,7 +4,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel
 
 class Entry:
-    def __init__(self, desc, due = "", due_alt = "", link = ""):
+    def __init__(self, parent_id, desc, due = "", due_alt = "", link = ""):
+        self.parent_id = parent_id
         self.desc = desc
         self.due = due
         self.due_alt = due_alt
