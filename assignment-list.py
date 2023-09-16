@@ -98,10 +98,11 @@ class AssignmentList(QMainWindow):
         """
         # TODO might want to add a warning
         # TODO might want to make part of the a destructor in the Group class
-        DB.removeGroup(id)
-        Globals.entries = list(filter(lambda e: e.parent_id != id, Globals.entries))
-        Globals.groups = list(filter(lambda g: g.id != id, Globals.groups))
-        self.drawGroups()
+        removed = DB.removeGroup(id)
+        if removed > 0:
+            Globals.entries = list(filter(lambda e: e.parent_id != id, Globals.entries))
+            Globals.groups = list(filter(lambda g: g.id != id, Globals.groups))
+            self.drawGroups()
 
     def addEntry(self, parent):
         """
@@ -116,8 +117,12 @@ class AssignmentList(QMainWindow):
         """
         Delete an entry with a given id
         """
-        # TODO implement when db is implemented, and entries have ids
-        pass
+        # TODO might want to add a warning
+        # TODO might want to make part of the a destructor in the Entry class
+        removed = DB.removeEntry(id)
+        if removed > 0:
+            Globals.entries = list(filter(lambda e: e.id != id, Globals.entries))
+            self.drawGroups()
 
     def drawGroups(self):
         """
@@ -186,13 +191,28 @@ class AssignmentList(QMainWindow):
         """
         Redraw the entries of a specific group
         """
+        # TODO consider having code to remove existing widgets to make this function more modular
         entries = list(filter(lambda e: e.parent_id == group_id, Globals.entries))
         entries_vbox = QVBoxLayout()
         entries_vbox.setContentsMargins(5, 0, 0, 0)
 
         for e in entries:
+            # skip if this entry is set to hidden
+            if e.hidden:
+                continue
+
             entries_vbox.addWidget(e.buildLayout())
-            # TODO find a good way to add modifier buttons
+
+            # entry modifier buttons
+            buttons_hbox = QHBoxLayout()
+
+            del_entry_button = QPushButton()
+            del_entry_button.setText("Remove Entry")
+            del_entry_button.clicked.connect((lambda id: lambda: self.removeEntry(id))(e.id))
+            buttons_hbox.addWidget(del_entry_button)
+
+            buttons_hbox.addStretch()
+            entries_vbox.addLayout(buttons_hbox)
 
         return entries_vbox
 

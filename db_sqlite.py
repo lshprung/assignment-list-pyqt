@@ -223,4 +223,31 @@ def removeGroup(group_id):
     query.addBindValue(group_id)
     query.exec_()
 
+    output = query.numRowsAffected()
     database.close()
+    return output
+
+def removeEntry(entry_id):
+    """
+    Remove a group by id from the database 
+    (actually set hidden to true, don't permanently delete it)
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    # Set entry to hidden
+    query.prepare("""
+        UPDATE entries SET hidden = 1 WHERE id = ?
+        """)
+    query.addBindValue(entry_id)
+    query.exec_()
+
+    output = query.numRowsAffected()
+    database.close()
+    return output
