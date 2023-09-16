@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
@@ -44,6 +44,10 @@ class Entry:
                 self.due.month(), 
                 self.due.day(), 
                 self.due.year()
+            ))
+        elif self.due_alt:
+            body.setText("{0}: ".format(
+                self.due_alt
             ))
         if self.link:
             body.setOpenExternalLinks(True)
