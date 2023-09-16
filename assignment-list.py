@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QToolBar, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QScrollArea, QToolBar, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QDate, QDateTime, Qt
 from add_group_form import addGroupForm
@@ -74,8 +74,10 @@ class AssignmentList(QMainWindow):
         DB.initDB()
 
     def displayWidgets(self):
-        main_widget = QWidget(self)
-        self.setCentralWidget(main_widget)
+        main_widget_scroll_area = QScrollArea(self)
+        main_widget_scroll_area.setWidgetResizable(True)
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget_scroll_area)
 
         title = QLabel(time.strftime("%A, %b %d %Y"))
         title.setFont(QFont("Arial", 17))
@@ -96,6 +98,7 @@ class AssignmentList(QMainWindow):
         v_box.addStretch()
 
         main_widget.setLayout(v_box)
+        main_widget_scroll_area.setWidget(main_widget)
 
     def addGroup(self):
         """
