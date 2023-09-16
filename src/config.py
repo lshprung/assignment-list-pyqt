@@ -11,16 +11,24 @@ import src.globals as Globals
 
 class Config():
     def __init__(self):
-        self.config_path = os.path.join(
-            os.path.expanduser("~"),
-            ".config",
-            "assignment-list-pyqt5",
-            "config")
+        self.config_path = self.getConfigPath()
 
         if not os.path.exists(self.config_path):
             self.createConfig()
 
         self.loadConfig()
+
+    def getConfigPath(self):
+        if sys.platform.startswith("win32"):
+            return os.path.join(os.path.expandvars("$APPDATA"), 
+                                "assignment-list-pyqt5",
+                                "config")
+        else:
+            return os.path.join(
+                os.path.expanduser("~"),
+                ".config",
+                "assignment-list-pyqt5",
+                "config")
 
     def loadConfig(self):
         self.config = configparser.ConfigParser()
