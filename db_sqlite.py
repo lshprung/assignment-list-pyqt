@@ -1,13 +1,24 @@
+import os
 import sys
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 Globals = __import__("globals")
+from group import Group
 
-def CreateTables(db_path):
+def initDB():
     """
-    Create database at a specified directory
+    Check for existing database. If it doesn't exist, build it
+    """
+    if not os.path.exists(Globals.db_path):
+        createTables()
+
+    loadFromTables()
+
+def createTables():
+    """
+    Create database at a specified Globals.db_path
     """
     database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
-    database.setDatabaseName(db_path)
+    database.setDatabaseName(Globals.db_path)
 
     if not database.open():
         print("Unable to open data source file.")
@@ -42,3 +53,57 @@ def CreateTables(db_path):
         """)
         
     database.close()
+
+def loadFromTables():
+    """
+    Load groups and entries into global variables
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.exec_("SELECT * FROM groups")
+    while query.next():
+        record = query.record()
+        Globals.groups.append(
+                Group(
+                    record.field("id").value(), 
+                    record.field("name").value(), 
+                    record.field("column").value(),
+                    record.field("link").value()))
+
+    database.close()
+
+def insertGroup(new_group):
+    """
+    Save groups and entries to the database at Globals.db_path
+    """
+    output = -1
+
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        INSERT INTO groups (name, column, link) VALUES (?, ?, ?)
+        """)
+    query.addBindValue(new_group.name)
+    query.addBindValue(new_group.column)
+    query.addBindValue(new_group.link)
+    query.exec_()
+
+    output = query.lastInsertId()
+
+    database.close()
+
+    return output

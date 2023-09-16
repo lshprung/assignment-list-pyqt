@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 
 from add_entry_form import Globals
 from group import Group
+DB = __import__("db_sqlite")
 
 class addGroupForm(QDialog):
     """
@@ -65,9 +66,9 @@ class addGroupForm(QDialog):
                                 QMessageBox.Close)
             return
 
+        new_id = DB.insertGroup(Group(0, name_text, column_text, link_text))
         # TODO do the database stuff (this will allow us to get the id)
-        Globals.groups.append(Group(Globals.max_group_id, name_text, column_text, link_text))
-        Globals.max_group_id = Globals.max_group_id + 1
+        Globals.groups.append(Group(new_id, name_text, column_text, link_text))
         self.close()
 
 if __name__ == "__main__":

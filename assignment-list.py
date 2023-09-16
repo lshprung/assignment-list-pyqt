@@ -51,7 +51,7 @@ class AssignmentList(QMainWindow):
 
     def setupDB(self):
         # TODO should check for existing db instead of blindly creating it
-        DB.CreateTables("/tmp/test.db")
+        DB.initDB()
 
     def displayWidgets(self):
         main_widget = QWidget(self)
