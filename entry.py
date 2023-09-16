@@ -1,7 +1,6 @@
-import time
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QHBoxLayout, QLabel
 
 class Entry:
     def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", done = False, hidden = False):
@@ -15,13 +14,31 @@ class Entry:
         self.hidden = hidden
 
     def buildLayout(self):
-        output = QLabel()
-        output.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        output.setFont(QFont("Arial", 11))
+        output = QHBoxLayout()
+        bullet = QLabel()
+        body = QLabel()
 
-        output.setText("- ")
+        body.setTextInteractionFlags(Qt.TextSelectableByMouse)
+
+        bullet.setFont(QFont("Arial", 11))
+        body.setFont(QFont("Arial", 11))
+
+        if self.done:
+            bullet.setText("\u2713 ")
+        else:
+            bullet.setText("- ")
+        output.addWidget(bullet)
+
         if(self.due):
-            output.setText(output.text() + "{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
-        output.setText(output.text() + self.desc)
+            body.setText("{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
+        body.setText(body.text() + self.desc)
+        output.addWidget(body)
+
+        output.addStretch()
+
+        if self.done:
+            font = body.font()
+            font.setStrikeOut(True)
+            body.setFont(font)
 
         return output

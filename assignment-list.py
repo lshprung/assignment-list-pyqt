@@ -93,13 +93,6 @@ class AssignmentList(QMainWindow):
         self.create_edit_group_dialog = editGroupForm(id)
         self.drawGroups()
 
-    def editEntry(self, id):
-        """
-        Open the 'editEntry' form
-        """
-        self.create_edit_entry_dialog = editEntryForm(id)
-        self.drawGroups()
-
     def removeGroup(self, id):
         """
         Delete a group with a given id
@@ -120,6 +113,27 @@ class AssignmentList(QMainWindow):
         self.create_new_entry_dialog = addEntryForm(parent)
         if old_count != len(Globals.entries):
             self.drawGroups() # TODO see if we can do this with only redrawing a single group
+
+    def editEntry(self, id):
+        """
+        Open the 'editEntry' form
+        """
+        self.create_edit_entry_dialog = editEntryForm(id)
+        self.drawGroups()
+
+    def toggleDoneEntry(self, id):
+        """
+        Toggle the 'done' flag on the entry with the given id
+        """
+        entry = list(filter(lambda e: e.id == id, Globals.entries))[0]
+        if entry.done:
+            entry.done = False
+        else:
+            entry.done = True
+        DB.updateEntry(entry)
+        Globals.entries = list(filter(lambda e: e.id != id, Globals.entries))
+        Globals.entries.append(entry)
+        self.drawGroups()
 
     def removeEntry(self, id):
         """
@@ -146,6 +160,12 @@ class AssignmentList(QMainWindow):
                     recursiveClear(child)
 
         recursiveClear(self.groups_hbox)
+
+        # Sort the groups
+        Globals.groups = sorted(Globals.groups, key=lambda g: g.id)
+
+        # Sort the entries (by due_date for now)
+        Globals.entries = sorted(Globals.entries, key=lambda e: (e.parent_id, e.due, e.id))
 
         # Create columns as vertical boxes
         column_left = QVBoxLayout()
@@ -208,7 +228,7 @@ class AssignmentList(QMainWindow):
             if e.hidden:
                 continue
 
-            entries_vbox.addWidget(e.buildLayout())
+            entries_vbox.addLayout(e.buildLayout())
 
             # entry modifier buttons
             buttons_hbox = QHBoxLayout()
@@ -217,6 +237,14 @@ class AssignmentList(QMainWindow):
             edit_entry_button.setText("Edit Entry")
             edit_entry_button.clicked.connect((lambda id: lambda: self.editEntry(id))(e.id))
             buttons_hbox.addWidget(edit_entry_button)
+
+            mark_done_button = QPushButton()
+            if e.done:
+                mark_done_button.setText("Not Done")
+            else:
+                mark_done_button.setText("Done")
+            mark_done_button.clicked.connect((lambda id: lambda: self.toggleDoneEntry(id))(e.id))
+            buttons_hbox.addWidget(mark_done_button)
 
             del_entry_button = QPushButton()
             del_entry_button.setText("Remove Entry")
