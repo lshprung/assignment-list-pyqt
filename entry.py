@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
@@ -39,10 +40,17 @@ class Entry:
         output.addWidget(bullet)
 
         if self.due:
-            body.setText("{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
+            body.setText("{0}/{1}/{2}: ".format(
+                self.due.month(), 
+                self.due.day(), 
+                self.due.year()
+            ))
         if self.link:
             body.setOpenExternalLinks(True)
-            body.setText(body.text() + "<a href=\"{0}\" style=\"color: {1}; text-decoration: none;\">".format(self.link, self.color if self.color else "default"))
+            body.setText(body.text() + "<a href=\"{0}\" style=\"color: {1};\">".format(
+                self.link, 
+                self.color if self.color else "default"
+            ))
         body.setText(body.text() + self.desc)
         if self.link:
             body.setText(body.text() + "</a>")
@@ -66,9 +74,11 @@ class Entry:
                 QLabel{{
                     color: {0};
                     background-color: {1};
+                    font-weight: {2};
                 }}""".format(
                     self.color if self.color else "default",
-                    self.highlight if self.highlight else "none"
+                    self.highlight if self.highlight else "none",
+                    "bold" if self.due and self.due <= date.today() else "normal"
                 ))
 
         return output

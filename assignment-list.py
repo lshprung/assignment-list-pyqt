@@ -40,7 +40,7 @@ class AssignmentList(QMainWindow):
         self.preferences_act.triggered.connect(PreferencesDialog)
         file_menu.addAction(self.preferences_act)
         # TODO implement reload of DB that works
-        self.reload_act = QAction("Reload", self)
+        self.reload_act = QAction("Reload [WIP]", self)
         self.reload_act.setShortcut("F5")
         #self.reload_act.triggered.connect(self.reload)
         file_menu.addAction(self.reload_act)
