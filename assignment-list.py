@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QScrollArea, QToolBar, QVBoxLayout, QWidget
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QAction, QApplication, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QPushButton, QScrollArea, QToolBar, QVBoxLayout, QWidget
+from PyQt5.QtGui import QCursor, QFont
 from PyQt5.QtCore import QDate, Qt
 from config import Config
 from add_group_form import addGroupForm
@@ -130,6 +130,23 @@ class AssignmentList(QMainWindow):
             Globals.groups = list(filter(lambda g: g.id != id, Globals.groups))
             self.drawGroups()
 
+    def groupContextMenu(self, group_id):
+        menu = QMenu()
+
+        add_entry_act = QAction("Add Entry")
+        add_entry_act.triggered.connect((lambda id: lambda: self.addEntry(id))(group_id))
+        menu.addAction(add_entry_act)
+
+        edit_group_act = QAction("Edit Group")
+        edit_group_act.triggered.connect((lambda id: lambda: self.editGroup(id))(group_id))
+        menu.addAction(edit_group_act)
+
+        del_group_act = QAction("Remove Group")
+        del_group_act.triggered.connect((lambda id: lambda: self.removeGroup(id))(group_id))
+        menu.addAction(del_group_act)
+
+        menu.exec_(QCursor.pos())
+
     def hideGroupButtons(self):
         """
         Set a flag to avoid rendering buttons under groups
@@ -178,6 +195,25 @@ class AssignmentList(QMainWindow):
             Globals.entries = list(filter(lambda e: e.id != id, Globals.entries))
             self.drawGroups()
 
+    def entryContextMenu(self, entry_id):
+        menu = QMenu()
+
+        edit_entry_act = QAction("Edit Entry")
+        edit_entry_act.triggered.connect((lambda id: lambda: self.editEntry(id))(entry_id))
+        menu.addAction(edit_entry_act)
+
+        mark_done_act = QAction("Done", checkable=True)
+        if list(filter(lambda e: e.id == entry_id, Globals.entries))[0].done:
+            mark_done_act.setChecked(True)
+        mark_done_act.triggered.connect((lambda id: lambda: self.toggleDoneEntry(id))(entry_id))
+        menu.addAction(mark_done_act)
+
+        del_entry_act = QAction("Remove Entry")
+        del_entry_act.triggered.connect((lambda id: lambda: self.removeEntry(id))(entry_id))
+        menu.addAction(del_entry_act)
+
+        menu.exec_(QCursor.pos())
+
     def hideEntryButtons(self):
         """
         Set a flag to avoid rendering buttons under entries
@@ -210,7 +246,7 @@ class AssignmentList(QMainWindow):
         # Sort the groups
         Globals.groups = sorted(Globals.groups, key=lambda g: g.id)
 
-        # Sort the entries (by due_date for now)
+        # Sort the entries
         Globals.entries = sorted(Globals.entries, key=lambda e: (e.parent_id, (e.due if e.due else QDate.currentDate()), e.done, e.id))
 
         # Create columns as vertical boxes
@@ -223,6 +259,11 @@ class AssignmentList(QMainWindow):
                 continue
 
             g_layout = g.buildLayout()
+
+            # Create custom context menu
+            g_layout.itemAt(0).widget().setToolTip("Right-Click for actions")
+            g_layout.itemAt(0).widget().setContextMenuPolicy(Qt.CustomContextMenu)
+            g_layout.itemAt(0).widget().customContextMenuRequested.connect((lambda id: lambda: self.groupContextMenu(id))(g.id))
             
             # Draw entries belonging to this group
             g_layout.addLayout(self.drawEntries(g.id))
@@ -276,7 +317,13 @@ class AssignmentList(QMainWindow):
             if e.hidden:
                 continue
 
-            entries_vbox.addLayout(e.buildLayout())
+            e_layout = e.buildLayout()
+            entries_vbox.addLayout(e_layout)
+
+            # Create custom context menu
+            e_layout.itemAt(1).widget().setToolTip("Right-Click for actions")
+            e_layout.itemAt(1).widget().setContextMenuPolicy(Qt.CustomContextMenu)
+            e_layout.itemAt(1).widget().customContextMenuRequested.connect((lambda id: lambda: self.entryContextMenu(id))(e.id))
 
             # entry modifier buttons
             if self.renderEntryButtons:
