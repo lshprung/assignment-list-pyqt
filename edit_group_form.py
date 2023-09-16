@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 
 from add_entry_form import Globals
 from group import Group
+DB = __import__("db_sqlite")
 
 class editGroupForm(QDialog):
     """
@@ -70,7 +71,14 @@ class editGroupForm(QDialog):
                                 QMessageBox.Close)
             return
 
-        # TODO do the database stuff (this will allow us to get the id)
+        # Update DB
+        group = list(filter(lambda g: g.id == self.id, Globals.groups))[0]
+        group.name = name_text
+        group.column = column_text
+        group.link = link_text
+        DB.updateGroup(group)
+
+        # Update global variables
         Globals.groups = list(filter(lambda g: g.id != self.id, Globals.groups))
         Globals.groups.append(Group(self.id, name_text, column_text, link_text))
         self.close()

@@ -170,6 +170,30 @@ def insertEntry(new_entry):
 
     return output
 
+def updateGroup(group):
+    """
+    Update group by group_id
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        UPDATE groups SET name = ?, column = ?, link = ? WHERE id = ?
+        """)
+    query.addBindValue(group.name)
+    query.addBindValue(group.column)
+    query.addBindValue(group.link)
+    query.addBindValue(group.id)
+    query.exec_()
+
+    database.close()
+
 def removeGroup(group_id):
     """
     Remove a group by id from the database 
