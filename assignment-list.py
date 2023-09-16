@@ -8,6 +8,7 @@ from add_group_form import addGroupForm
 from edit_group_form import editGroupForm
 from add_entry_form import addEntryForm
 Globals = __import__("globals")
+DB = __import__("db_sqlite")
 
 class AssignmentList(QMainWindow):
     def __init__(self):
@@ -19,6 +20,7 @@ class AssignmentList(QMainWindow):
         self.setWindowTitle("Assignment List")
         self.createMenu()
         self.createToolbar()
+        self.setupDB()
         self.displayWidgets()
         self.show()
 
@@ -46,6 +48,10 @@ class AssignmentList(QMainWindow):
         self.addToolBar(tool_bar)
 
         tool_bar.addAction(self.add_group_act)
+
+    def setupDB(self):
+        # TODO should check for existing db instead of blindly creating it
+        DB.CreateTables("/tmp/test.db")
 
     def displayWidgets(self):
         main_widget = QWidget(self)
