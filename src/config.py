@@ -19,10 +19,12 @@ class Config():
         self.loadConfig()
 
     def getConfigPath(self):
+        # Windows config path is "$LOCALAPPDATA/assignment-list-pyqt5/config"
         if sys.platform.startswith("win32"):
-            return os.path.join(os.path.expandvars("$APPDATA"), 
+            return os.path.join(os.path.expandvars("$LOCALAPPDATA"), 
                                 "assignment-list-pyqt5",
                                 "config")
+        # Unix config path is "$HOME/.config/assignment-list-pyqt5/config"
         else:
             return os.path.join(
                 os.path.expanduser("~"),
@@ -44,15 +46,26 @@ class Config():
 
     def createConfig(self):
         self.config = configparser.ConfigParser()
-        self.config["paths"] = {
-            "db_path": os.path.join(
-                os.path.expanduser("~"),
-                ".local",
-                "share",
-                "assignment-list-pyqt5",
-                "data.db"
-            )
-        }
+        if sys.platform.startswith("win32"):
+            self.config["paths"] = {
+                # Windows default DB path is "$APPDATA/assignment-list-pyqt5/data.db"
+                "db_path": os.path.join(
+                    os.path.expandvars("$APPDATA"),
+                    "assignment-list-pyqt5",
+                    "data.db"
+                )
+            }
+        else:
+            self.config["paths"] = {
+                # Unix default DB path is "$HOME/.local/share/assignment-list-pyqt5/data.db"
+                "db_path": os.path.join(
+                    os.path.expanduser("~"),
+                    ".local",
+                    "share",
+                    "assignment-list-pyqt5",
+                    "data.db"
+                )
+            }
 
         self.updateConfig()
 
