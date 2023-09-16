@@ -25,6 +25,7 @@ class Entry:
         body.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse)
         body.setFont(QFont("Arial", 11))
         body.setWordWrap(True)
+        body.setToolTip("Right-Click for actions")
 
         if self.done:
             bullet.setText("\u2713 ")
@@ -45,6 +46,7 @@ class Entry:
         body.setText(body.text() + self.desc)
         if self.link:
             body.setText(body.text() + "</a>")
+            body.setToolTip("{}".format(self.link))
         output.addWidget(body)
 
         output.addStretch()

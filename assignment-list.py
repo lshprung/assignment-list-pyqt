@@ -270,7 +270,6 @@ class AssignmentList(QMainWindow):
             entries_vbox.addLayout(e_layout)
 
             # Create custom context menu
-            e_layout.itemAt(1).widget().setToolTip("Right-Click for actions")
             e_layout.itemAt(1).widget().setContextMenuPolicy(Qt.CustomContextMenu)
             e_layout.itemAt(1).widget().customContextMenuRequested.connect((lambda id: lambda: self.entryContextMenu(id))(e.id))
 
