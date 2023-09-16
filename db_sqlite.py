@@ -86,13 +86,18 @@ def loadFromTables():
     query.exec_("SELECT * FROM entries")
     while query.next():
         record = query.record()
-        due_date_struct = strptime(record.field("due_date").value(), "%Y-%m-%d")
+        # create a QDate if the due date is set
+        if record.field("due_date").value():
+            due_date_struct = strptime(record.field("due_date").value(), "%Y-%m-%d")
+            due_date = QDate(due_date_struct.tm_year, due_date_struct.tm_mon, due_date_struct.tm_mday)
+        else:
+            due_date = ""
         Globals.entries.append(
                 Entry(
                     record.field("id").value(),
                     record.field("parent_id").value(),
                     record.field("description").value(),
-                    QDate(due_date_struct.tm_year, due_date_struct.tm_mon, due_date_struct.tm_mday),
+                    due_date,
                     record.field("alt_due_date").value(),
                     record.field("link").value(),
                     record.field("done").value(),
@@ -149,10 +154,13 @@ def insertEntry(new_entry):
         """)
     query.bindValue(":p_id", new_entry.parent_id)
     query.bindValue(":desc", new_entry.desc)
-    query.bindValue(":due", "{0}-{1}-{2}".format( 
-                                                 new_entry.due.year(), 
-                                                 new_entry.due.month(), 
-                                                 new_entry.due.day()))
+    if new_entry.due:
+        query.bindValue(":due", "{0}-{1}-{2}".format( 
+                                                     new_entry.due.year(), 
+                                                     new_entry.due.month(), 
+                                                     new_entry.due.day()))
+    else:
+        query.bindValue(":due", "")
     query.bindValue(":alt_due", new_entry.due_alt)
     query.bindValue(":link", new_entry.link)
     success = query.exec_()
@@ -219,10 +227,13 @@ def updateEntry(entry):
             WHERE id = :id
         """)
     query.bindValue(":desc", entry.desc)
-    query.bindValue(":due", "{0}-{1}-{2}".format( 
-                                                 entry.due.year(), 
-                                                 entry.due.month(), 
-                                                 entry.due.day()))
+    if entry.due:
+        query.bindValue(":due", "{0}-{1}-{2}".format( 
+                                                     entry.due.year(), 
+                                                     entry.due.month(), 
+                                                     entry.due.day()))
+    else:
+        query.bindValue(":due", "")
     query.bindValue(":alt_due", entry.due_alt)
     query.bindValue(":link", entry.link)
     query.bindValue(":done", entry.done)
@@ -289,3 +300,28 @@ def removeEntry(entry_id):
     output = query.numRowsAffected()
     database.close()
     return output
+
+def cleanHidden():
+    """
+    Permanently delete removed/hidden groups and entries
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    # Remove hidden entries
+    query.exec_("""
+        DELETE FROM entries WHERE hidden = 1
+        """)
+
+    # Remove hidden groups
+    query.exec_("""
+        DELETE FROM groups WHERE hidden = 1
+        """)
+
+    database.close()

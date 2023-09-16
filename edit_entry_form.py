@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QApplication, QCheckBox, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QDate, Qt
 
 Globals = __import__("globals")
 from entry import Entry
@@ -35,10 +35,19 @@ class editEntryForm(QDialog):
         self.entry_desc.setText(entry.desc)
         entry_form_layout.addRow("Description:", self.entry_desc)
 
-        self.entry_due = QDateTimeEdit()
+        self.due_hbox = QHBoxLayout()
+        self.entry_due = QDateTimeEdit(QDate.currentDate())
         self.entry_due.setDisplayFormat("MM/dd/yyyy")
-        self.entry_due.setDate(entry.due)
-        entry_form_layout.addRow("Due Date:", self.entry_due)
+        if entry.due:
+            self.entry_due.setDate(entry.due)
+        self.due_hbox.addWidget(self.entry_due)
+        self.entry_due_checkbox = QCheckBox()
+        if entry.due:
+            self.entry_due_checkbox.setChecked(True)
+        else:
+            self.entry_due_checkbox.setChecked(False)
+        self.due_hbox.addWidget(self.entry_due_checkbox)
+        entry_form_layout.addRow("Due Date:", self.due_hbox)
 
         self.entry_due_alt = QLineEdit()
         self.entry_due_alt.setText(entry.due_alt)
@@ -65,7 +74,10 @@ class editEntryForm(QDialog):
 
     def handleSubmit(self):
         desc_text = self.entry_desc.text()
-        due_text = self.entry_due.date() # due_text is a QDate
+        if self.entry_due_checkbox.isChecked():
+            due_text = self.entry_due.date() # due_text is a QDate
+        else:
+            due_text = "" # due is unchecked
         due_alt_text = self.entry_due_alt.text()
         link_text = self.entry_link.text()
 

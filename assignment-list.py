@@ -39,6 +39,10 @@ class AssignmentList(QMainWindow):
         self.add_group_act = QAction("Add Group", self)
         self.add_group_act.triggered.connect(self.addGroup)
         edit_menu.addAction(self.add_group_act)
+        edit_menu.addSeparator()
+        self.clean_hidden_act = QAction("Permanently Delete Removed Groups and Entries", self)
+        self.clean_hidden_act.triggered.connect(self.cleanHidden)
+        edit_menu.addAction(self.clean_hidden_act)
 
         about_act = QAction("About", self)
         about_act.triggered.connect(self.aboutDialog)
@@ -145,6 +149,13 @@ class AssignmentList(QMainWindow):
         if removed > 0:
             Globals.entries = list(filter(lambda e: e.id != id, Globals.entries))
             self.drawGroups()
+
+    def cleanHidden(self):
+        """
+        Permanently delete removed groups and entries from db
+        """
+        # TODO consider creating a warning dialogue for this
+        DB.cleanHidden()
 
     def drawGroups(self):
         """

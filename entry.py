@@ -19,6 +19,7 @@ class Entry:
         body = QLabel()
 
         body.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        body.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
 
         bullet.setFont(QFont("Arial", 11))
         body.setFont(QFont("Arial", 11))
@@ -29,9 +30,14 @@ class Entry:
             bullet.setText("- ")
         output.addWidget(bullet)
 
-        if(self.due):
+        if self.due:
             body.setText("{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
+        if self.link:
+            body.setOpenExternalLinks(True)
+            body.setText(body.text() + "<a href=\"{0}\">".format(self.link))
         body.setText(body.text() + self.desc)
+        if self.link:
+            body.setText(body.text() + "</a>")
         output.addWidget(body)
 
         output.addStretch()

@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QApplication, QCheckBox, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QDate, Qt
 from entry import Entry
@@ -28,9 +28,14 @@ class addEntryForm(QDialog):
         self.new_entry_desc = QLineEdit()
         entry_form_layout.addRow("Description:", self.new_entry_desc)
 
+        self.due_hbox = QHBoxLayout()
         self.new_entry_due = QDateTimeEdit(QDate.currentDate())
         self.new_entry_due.setDisplayFormat("MM/dd/yyyy")
-        entry_form_layout.addRow("Due Date:", self.new_entry_due)
+        self.due_hbox.addWidget(self.new_entry_due)
+        self.new_entry_due_checkbox = QCheckBox()
+        self.new_entry_due_checkbox.setChecked(True)
+        self.due_hbox.addWidget(self.new_entry_due_checkbox)
+        entry_form_layout.addRow("Due Date:", self.due_hbox)
 
         self.new_entry_due_alt = QLineEdit()
         entry_form_layout.addRow("Due Date (Alt):", self.new_entry_due_alt)
@@ -61,7 +66,9 @@ class addEntryForm(QDialog):
     def handleSubmit(self, parent):
         # Check that the new entry is not blank
         desc_text = self.new_entry_desc.text()
-        due_text = self.new_entry_due.date() # due_text is a QDate
+        due_text = ""
+        if self.new_entry_due_checkbox.isChecked():
+            due_text = self.new_entry_due.date() # due_text is a QDate
         due_alt_text = self.new_entry_due_alt.text()
         link_text = self.new_entry_link.text()
 
