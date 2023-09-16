@@ -1,8 +1,11 @@
 import os
 import sys
+from time import strptime
+from PyQt5.QtCore import QDate
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 Globals = __import__("globals")
 from group import Group
+from entry import Entry
 
 def initDB():
     """
@@ -67,6 +70,7 @@ def loadFromTables():
 
     query = QSqlQuery()
 
+    # Load groups
     query.exec_("SELECT * FROM groups")
     while query.next():
         record = query.record()
@@ -77,11 +81,27 @@ def loadFromTables():
                     record.field("column").value(),
                     record.field("link").value()))
 
+    # Load entries
+    query.exec_("SELECT * FROM entries")
+    while query.next():
+        record = query.record()
+        due_date_struct = strptime(record.field("due_date").value(), "%Y-%m-%d")
+        Globals.entries.append(
+                Entry(
+                    record.field("id").value(),
+                    record.field("parent_id").value(),
+                    record.field("description").value(),
+                    QDate(due_date_struct.tm_year, due_date_struct.tm_mon, due_date_struct.tm_mday),
+                    record.field("alt_due_date").value(),
+                    record.field("link").value(),
+                    record.field("done").value(),
+                    record.field("hidden").value()))
+
     database.close()
 
 def insertGroup(new_group):
     """
-    Save groups and entries to the database at Globals.db_path
+    Insert group to the database at Globals.db_path
     """
     output = -1
 
@@ -101,6 +121,47 @@ def insertGroup(new_group):
     query.addBindValue(new_group.column)
     query.addBindValue(new_group.link)
     query.exec_()
+
+    output = query.lastInsertId()
+
+    database.close()
+
+    return output
+
+def insertEntry(new_entry):
+    """
+    Insert entry to the database at Globals.db_path
+    """
+    output = -1
+
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        INSERT INTO entries (parent_id, description, due_date, alt_due_date, link) VALUES (:p_id, :desc, :due, :alt_due, :link)
+        """)
+    query.bindValue(":p_id", new_entry.parent_id)
+    query.bindValue(":desc", new_entry.desc)
+    query.bindValue(":due", "{0}-{1}-{2}".format( 
+                                                 new_entry.due.year(), 
+                                                 new_entry.due.month(), 
+                                                 new_entry.due.day()))
+    query.bindValue(":alt_due", new_entry.due_alt)
+    query.bindValue(":link", new_entry.link)
+    success = query.exec_()
+    # DEBUG
+    #print(query.lastError().text())
+    #print(query.boundValues())
+    #if success:
+    #    print("Query succeeded")
+    #else:
+    #    print("Query failed")
 
     output = query.lastInsertId()
 

@@ -4,13 +4,15 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel
 
 class Entry:
-    def __init__(self, parent_id, desc, due = "", due_alt = "", link = ""):
+    def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", done = False, hidden = False):
+        self.id = id
         self.parent_id = parent_id
         self.desc = desc
         self.due = due
         self.due_alt = due_alt
         self.link = link
-        self.done = False
+        self.done = done
+        self.hidden = hidden
 
     def buildLayout(self):
         output = QLabel()
@@ -19,7 +21,7 @@ class Entry:
 
         output.setText("- ")
         if(self.due):
-            output.setText(output.text() + time.strftime("%m/%d/%y: "))
+            output.setText(output.text() + "{0}/{1}/{2}: ".format(self.due.month(), self.due.day(), self.due.year()))
         output.setText(output.text() + self.desc)
 
         return output

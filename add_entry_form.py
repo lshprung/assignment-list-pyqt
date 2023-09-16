@@ -4,6 +4,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QDate, Qt
 from entry import Entry
 Globals = __import__("globals")
+DB = __import__("db_sqlite")
 
 class addEntryForm(QDialog):
     def __init__(self, parent):
@@ -60,7 +61,7 @@ class addEntryForm(QDialog):
     def handleSubmit(self, parent):
         # Check that the new entry is not blank
         desc_text = self.new_entry_desc.text()
-        due_text = self.new_entry_due.text()
+        due_text = self.new_entry_due.date() # due_text is a QDate
         due_alt_text = self.new_entry_due_alt.text()
         link_text = self.new_entry_link.text()
 
@@ -71,8 +72,8 @@ class addEntryForm(QDialog):
                                 QMessageBox.Close)
             return
 
-        # TODO do the database stuff (this will allow us to get the id)
-        Globals.entries.append(Entry(parent, desc_text, due_text, due_alt_text, link_text))
+        new_id = DB.insertEntry(Entry(0, parent, desc_text, due_text, due_alt_text, link_text))
+        Globals.entries.append(Entry(new_id, parent, desc_text, due_text, due_alt_text, link_text))
         self.close()
 
 if __name__ == "__main__":

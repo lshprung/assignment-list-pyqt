@@ -67,7 +67,6 @@ class addGroupForm(QDialog):
             return
 
         new_id = DB.insertGroup(Group(0, name_text, column_text, link_text))
-        # TODO do the database stuff (this will allow us to get the id)
         Globals.groups.append(Group(new_id, name_text, column_text, link_text))
         self.close()
 

@@ -50,7 +50,6 @@ class AssignmentList(QMainWindow):
         tool_bar.addAction(self.add_group_act)
 
     def setupDB(self):
-        # TODO should check for existing db instead of blindly creating it
         DB.initDB()
 
     def displayWidgets(self):
@@ -66,8 +65,6 @@ class AssignmentList(QMainWindow):
         title_h_box.addWidget(title)
         title_h_box.addStretch()
 
-        self.load_groups()
-        self.load_entries() # TODO placeholder, this will eventually be moved to group.py
         self.groups_hbox = QHBoxLayout()
         self.groups_hbox.setContentsMargins(20, 5, 20, 5)
         self.drawGroups()
@@ -185,26 +182,6 @@ class AssignmentList(QMainWindow):
     def aboutDialog(self):
         QMessageBox.about(self, "About Assignment List",
                           "Created by Louie S. - 2023")
-
-    def load_groups(self):
-        """
-        Load groups data
-        """
-        # TODO
-        #Globals.groups.append(Group(1, "test1", "left"))
-        #Globals.groups.append(Group(2, "test2", "left"))
-        #Globals.groups.append(Group(3, "test3", "right"))
-        #Globals.groups.append(Group(4, "test4", "right"))
-        pass
-
-    def load_entries(self):
-        """
-        Load entries data
-        """
-        # TODO
-        #Globals.entries.append(Entry(1, "test1-task1"))
-        #Globals.entries.append(Entry(2, "test2-task1"))
-        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
