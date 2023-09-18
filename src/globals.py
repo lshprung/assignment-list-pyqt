@@ -1,3 +1,4 @@
 groups = []
 entries = []
-db_path = "./test.db"
+rules = []
+db_path = ""

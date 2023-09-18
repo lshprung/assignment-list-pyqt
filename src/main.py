@@ -12,6 +12,7 @@ from src.add_entry_form import addEntryForm
 from src.edit_entry_form import editEntryForm
 import src.globals as Globals
 import src.db_sqlite as DB
+from src.rules_dialog import RulesDialog
 
 class AssignmentList(QMainWindow):
     def __init__(self):
@@ -39,7 +40,6 @@ class AssignmentList(QMainWindow):
         self.preferences_act.setShortcut("Alt+Return")
         self.preferences_act.triggered.connect(self.preferences)
         file_menu.addAction(self.preferences_act)
-        # TODO implement reload of DB that works
         self.reload_act = QAction("Reload", self)
         self.reload_act.setShortcut("F5")
         self.reload_act.triggered.connect(self.reload)
@@ -184,12 +184,22 @@ class AssignmentList(QMainWindow):
             Globals.entries = list(filter(lambda e: e.id != id, Globals.entries))
             self.drawGroups()
 
+    def editRules(self, id):
+        pass
+        need_redraw = RulesDialog(id)
+        if need_redraw:
+            self.drawGroups()
+
     def entryContextMenu(self, entry_id):
         menu = QMenu()
 
         edit_entry_act = QAction("Edit Entry")
         edit_entry_act.triggered.connect((lambda id: lambda: self.editEntry(id))(entry_id))
         menu.addAction(edit_entry_act)
+
+        rules_act = QAction("Rules")
+        rules_act.triggered.connect((lambda id: lambda: self.editRules(id))(entry_id))
+        menu.addAction(rules_act)
 
         mark_done_act = QAction("Done", checkable=True)
         if list(filter(lambda e: e.id == entry_id, Globals.entries))[0].done:
@@ -206,7 +216,6 @@ class AssignmentList(QMainWindow):
     def preferences(self):
         # TODO not sure if this is working exactly how I think it does, but it works
         need_reload = PreferencesDialog()
-        print(need_reload)
         if need_reload:
             self.reload()
 
@@ -237,6 +246,9 @@ class AssignmentList(QMainWindow):
 
         # Sort the entries
         Globals.entries = sorted(Globals.entries, key=lambda e: (e.parent_id, (e.due if e.due else QDate.currentDate()), e.done, e.id))
+
+        # Sort the rules
+        Globals.rules = sorted(Globals.rules, key=lambda r: (r.id))
 
         # Create columns as vertical boxes
         column_left = QVBoxLayout()

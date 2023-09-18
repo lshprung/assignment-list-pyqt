@@ -6,6 +6,7 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 import src.globals as Globals
 from src.group import Group
 from src.entry import Entry
+from src.rule import Rule
 
 def initDB():
     """
@@ -40,6 +41,7 @@ def createTables():
     # Erase database contents so that we don't have duplicates
     query.exec_("DROP TABLE groups")
     query.exec_("DROP TABLE entries")
+    query.exec_("DROP TABLE rules")
 
     query.exec_("""
         CREATE TABLE groups (
@@ -65,6 +67,19 @@ def createTables():
             hidden TINYINT(1) DEFAULT FALSE
         )
         """)
+
+    query.exec_("""
+        CREATE TABLE rules (
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+            entry_id REFERENCES entries (id),
+            before_after TINYINT(1) DEFAULT TRUE,
+            date TEXT NOT NULL,
+            color VARCHAR(255) DEFAULT NULL,
+            highlight VARCHAR(255) DEFAULT NULL
+        )
+        """)
+
+    print(database.lastError().text())
         
     database.close()
 
@@ -117,6 +132,22 @@ def loadFromTables():
                     record.field("highlight").value(),
                     record.field("done").value(),
                     record.field("hidden").value()))
+
+    # Load rules
+    Globals.rules = [] # Reset local rules array
+    query.exec_("SELECT * FROM rules")
+    while query.next():
+        record = query.record()
+        date_struct = strptime(record.field("date").value(), "%Y-%m-%d")
+        date = QDate(date_struct.tm_year, date_struct.tm_mon, date_struct.tm_mday)
+        Globals.rules.append(
+                Rule(
+                    record.field("id").value(),
+                    record.field("entry_id").value(),
+                    "before" if record.field("before_after").value() == 0 else "after",
+                    date,
+                    record.field("color").value(),
+                    record.field("highlight").value()))
 
     database.close()
 
@@ -180,6 +211,47 @@ def insertEntry(new_entry):
     query.bindValue(":link", new_entry.link)
     query.bindValue(":color", new_entry.color)
     query.bindValue(":highlight", new_entry.highlight)
+    success = query.exec_()
+    # DEBUG
+    #print(query.lastError().text())
+    #print(query.boundValues())
+    #if success:
+    #    print("Query succeeded")
+    #else:
+    #    print("Query failed")
+
+    output = query.lastInsertId()
+
+    database.close()
+
+    return output
+
+def insertRule(new_rule):
+    """
+    Insert rule to the database at Globals.db_path
+    """
+    output = -1
+
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        INSERT INTO rules (entry_id, before_after, date, color, highlight) VALUES (:e_id, :when, :date, :color, :highlight)
+        """)
+    query.bindValue(":e_id", new_rule.entry_id)
+    query.bindValue(":when", 0 if new_rule.when.lower() == "before" else 1)
+    query.bindValue(":date", "{0}-{1}-{2}".format(
+        new_rule.date.year(),
+        new_rule.date.month(),
+        new_rule.date.day()))
+    query.bindValue(":color", new_rule.color)
+    query.bindValue(":highlight", new_rule.highlight)
     success = query.exec_()
     # DEBUG
     #print(query.lastError().text())
@@ -264,6 +336,46 @@ def updateEntry(entry):
 
     database.close()
 
+def updateRule(rule):
+    """
+    Update rule by its id
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    query.prepare("""
+        UPDATE rules SET 
+            before_after = :when, 
+            date = :date, 
+            color = :color,
+            highlight = :highlight
+            WHERE id = :id
+        """)
+    query.bindValue(":when", 0 if rule.when.lower() == "before" else 1)
+    query.bindValue(":date", "{0}-{1}-{2}".format(
+        rule.date.year(),
+        rule.date.month(),
+        rule.date.day()))
+    query.bindValue(":color", rule.color)
+    query.bindValue(":highlight", rule.highlight)
+    query.bindValue(":id", rule.id)
+    success = query.exec_()
+    # DEBUG
+    #print(query.lastError().text())
+    #print(query.boundValues())
+    #if success:
+    #    print("Query succeeded")
+    #else:
+    #    print("Query failed")
+
+    database.close()
+
 def removeGroup(group_id):
     """
     Remove a group by id from the database 
@@ -322,6 +434,31 @@ def removeEntry(entry_id):
     database.close()
     return output
 
+def removeRule(rule_id):
+    """
+    Remove a rule by id from the database 
+    (we do not preserve rules, unlike groups and entries)
+    """
+    database = QSqlDatabase.addDatabase("QSQLITE") # SQlite version 3
+    database.setDatabaseName(Globals.db_path)
+
+    if not database.open():
+        print("Unable to open data source file.")
+        sys.exit(1) # Error out. TODO consider throwing a dialog instead
+
+    query = QSqlQuery()
+
+    # Set entry to hidden
+    query.prepare("""
+        DELETE FROM rules WHERE id = ?
+        """)
+    query.addBindValue(rule_id)
+    query.exec_()
+
+    output = query.numRowsAffected()
+    database.close()
+    return output
+
 def cleanHidden():
     """
     Permanently delete removed/hidden groups and entries
@@ -334,6 +471,14 @@ def cleanHidden():
         sys.exit(1) # Error out. TODO consider throwing a dialog instead
 
     query = QSqlQuery()
+
+    # Remove rules associated with hidden entries
+    query.exec_("""
+        DELETE FROM rules WHERE id IN (
+            SELECT rules.id FROM rules 
+            INNER JOIN entries ON rules.entry_id = entries.id
+            WHERE entries.hidden = 1
+        )""")
 
     # Remove hidden entries
     query.exec_("""
