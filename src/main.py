@@ -186,9 +186,9 @@ class AssignmentList(QMainWindow):
 
     def editRules(self, id):
         pass
-        need_redraw = RulesDialog(id)
-        if need_redraw:
-            self.drawGroups()
+        need_reload = RulesDialog(id)
+        if need_reload:
+            self.reload()
 
     def entryContextMenu(self, entry_id):
         menu = QMenu()

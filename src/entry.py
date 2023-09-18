@@ -1,7 +1,8 @@
 from datetime import date
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
+import src.globals as Globals
 
 class Entry:
     def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", color = "", highlight = "", done = False, hidden = False):
@@ -27,6 +28,15 @@ class Entry:
         body.setFont(QFont("Arial", 11))
         body.setWordWrap(True)
         body.setToolTip("Right-Click for actions")
+
+        # Check rules
+        relevant_rules = list(filter(lambda r: r.entry_id == self.id, Globals.rules))
+        for r in relevant_rules:
+            if (r.when.lower() == "before" and r.date > QDate.currentDate()) or (r.when.lower() == "after" and r.date <= QDate.currentDate()):
+                if r.color:
+                    self.color = r.color
+                if r.highlight:
+                    self.highlight = r.highlight
 
         if self.done:
             bullet.setText("\u2713 ")

@@ -30,11 +30,15 @@ class Rule:
         # TODO Consider making this a color selector widget
         color_widget = QLineEdit()
         color_widget.setPlaceholderText("Color")
+        if self.color:
+            color_widget.setText(self.color)
         output.addWidget(color_widget)
 
         # TODO Consider making this a color selector widget
         highlight_widget = QLineEdit()
         highlight_widget.setPlaceholderText("Highlight")
+        if self.highlight:
+            highlight_widget.setText(self.highlight)
         output.addWidget(highlight_widget)
 
         return output
