@@ -1,3 +1,4 @@
+MANIFEST.in
 assignment-list
 setup.cfg
 setup.py
@@ -6,6 +7,8 @@ assignment_list.egg-info/SOURCES.txt
 assignment_list.egg-info/dependency_links.txt
 assignment_list.egg-info/requires.txt
 assignment_list.egg-info/top_level.txt
+data/assignment-list.desktop
+data/assignment-list.svg
 src/__init__.py
 src/add_entry_form.py
 src/add_group_form.py
