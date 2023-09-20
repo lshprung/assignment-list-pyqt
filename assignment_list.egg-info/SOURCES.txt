@@ -18,3 +18,5 @@ src/globals.py
 src/group.py
 src/main.py
 src/preferences_dialog.py
+src/rule.py
+src/rules_dialog.py
