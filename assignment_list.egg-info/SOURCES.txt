@@ -1,5 +1,6 @@
 MANIFEST.in
 assignment-list
+pyproject.toml
 setup.cfg
 setup.py
 assignment_list.egg-info/PKG-INFO
