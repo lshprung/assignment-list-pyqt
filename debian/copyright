@@ -1,0 +1,47 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: assignment-list
+Upstream-Contact: <preferred name and address to reach the upstream project>
+Source: <url://example.com>
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     MANIFEST.in
+           PKG-INFO
+           assignment-list
+           assignment_list.egg-info/PKG-INFO
+           assignment_list.egg-info/SOURCES.txt
+           assignment_list.egg-info/dependency_links.txt
+           assignment_list.egg-info/requires.txt
+           assignment_list.egg-info/top_level.txt
+           data/assignment-list.desktop
+           pyproject.toml
+           setup.py
+           src/__init__.py
+           src/add_entry_form.py
+           src/add_group_form.py
+           src/config.py
+           src/db_sqlite.py
+           src/edit_entry_form.py
+           src/edit_group_form.py
+           src/entry.py
+           src/globals.py
+           src/group.py
+           src/main.py
+           src/preferences_dialog.py
+           src/rule.py
+           src/rules_dialog.py
+Copyright: __NO_COPYRIGHT_NOR_LICENSE__
+License:   __NO_COPYRIGHT_NOR_LICENSE__
+
+Files:     setup.cfg
+Copyright: __NO_COPYRIGHT__ in: setup.cfg
+License:   __UNKNOWN__
+ [options]
+
+#----------------------------------------------------------------------------
+# xml and html files (skipped):
+#         data/assignment-list.svg
+
+#----------------------------------------------------------------------------
+# Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following
+# license/copyright files.
