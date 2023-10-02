@@ -1,6 +1,15 @@
 #!/usr/bin/make -f
 # You must remove unused comment lines for the released package.
 #export DH_VERBOSE = 1
+export PYBUILD_NAME=assignment-list
+export PYBUILD_DESTDIR=debian/assignment-list
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/assignment-list/usr/share/pixmaps
+	install data/assignment-list.svg debian/assignment-list/usr/share/pixmaps
+	mkdir -p debian/assignment-list/usr/share/applications
+	install data/assignment-list.desktop debian/assignment-list/usr/share/applications
