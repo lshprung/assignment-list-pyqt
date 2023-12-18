@@ -1,3 +1,4 @@
-include data/assignment-list.svg
 include data/assignment-list.desktop
+include data/assignment-list.ico
+include data/assignment-list.svg
 recursive-include debian *
