@@ -2,7 +2,7 @@ import os
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
-from src.config import Config
+from assignment_list_pyqt.config import Config
 
 class PreferencesDialog(QDialog):
     """
@@ -10,7 +10,8 @@ class PreferencesDialog(QDialog):
     """
     def __init__(self):
         super().__init__()
-        uic.loadUi(os.path.join("src", "preferences_dialog.ui"), self)
+        uic.loadUi(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                   "preferences_dialog.ui"), self)
         
         # class globals
         self.config = Config()

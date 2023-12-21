@@ -3,10 +3,10 @@ import sys
 from time import strptime
 from PyQt5.QtCore import QDate
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
-import src.globals as Globals
-from src.group import Group
-from src.entry import Entry
-from src.rule import Rule
+import assignment_list_pyqt.globals as Globals
+from assignment_list_pyqt.group import Group
+from assignment_list_pyqt.entry import Entry
+from assignment_list_pyqt.rule import Rule
 
 def initDB():
     """

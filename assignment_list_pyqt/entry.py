@@ -2,7 +2,7 @@ from datetime import date
 from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
-import src.globals as Globals
+import assignment_list_pyqt.globals as Globals
 
 class Entry:
     def __init__(self, id, parent_id, desc, due = "", due_alt = "", link = "", color = "", highlight = "", done = False, hidden = False):

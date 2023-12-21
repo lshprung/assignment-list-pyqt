@@ -1,10 +1,10 @@
 import sys
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QApplication, QDialog, QHBoxLayout, QPushButton, QScrollArea, QVBoxLayout
-from src.config import Config
-from src.rule import Rule
-import src.db_sqlite as DB
-import src.globals as Globals
+from assignment_list_pyqt.config import Config
+from assignment_list_pyqt.rule import Rule
+import assignment_list_pyqt.db_sqlite as DB
+import assignment_list_pyqt.globals as Globals
 
 class RulesDialog(QDialog):
     """

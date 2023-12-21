@@ -6,15 +6,15 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QAction, QApplication, QMainWindow, QMenu, QMessageBox, QVBoxLayout
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import QDate, Qt
-from src.config import Config
-from src.preferences_dialog import PreferencesDialog
-from src.add_group_form import addGroupForm
-from src.edit_group_form import editGroupForm
-from src.add_entry_form import addEntryForm
-from src.edit_entry_form import editEntryForm
-import src.globals as Globals
-import src.db_sqlite as DB
-from src.rules_dialog import RulesDialog
+from assignment_list_pyqt.config import Config
+from assignment_list_pyqt.preferences_dialog import PreferencesDialog
+from assignment_list_pyqt.add_group_form import addGroupForm
+from assignment_list_pyqt.edit_group_form import editGroupForm
+from assignment_list_pyqt.add_entry_form import addEntryForm
+from assignment_list_pyqt.edit_entry_form import editEntryForm
+import assignment_list_pyqt.globals as Globals
+import assignment_list_pyqt.db_sqlite as DB
+from assignment_list_pyqt.rules_dialog import RulesDialog
 
 class AssignmentList(QMainWindow):
     def __init__(self):

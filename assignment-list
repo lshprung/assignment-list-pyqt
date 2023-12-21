@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from src.main import AssignmentList as main
+from assignment_list_pyqt.main import AssignmentList as main
 
 app = QApplication(sys.argv)
 window = main()

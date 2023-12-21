@@ -7,7 +7,7 @@ import configparser
 import os
 import sys
 
-import src.globals as Globals
+import assignment_list_pyqt.globals as Globals
 
 class Config():
     def __init__(self):

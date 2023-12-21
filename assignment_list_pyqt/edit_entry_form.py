@@ -4,9 +4,9 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
 from PyQt5.QtCore import QDate
 
-import src.globals as Globals
-from src.entry import Entry
-import src.db_sqlite as DB
+import assignment_list_pyqt.globals as Globals
+from assignment_list_pyqt.entry import Entry
+import assignment_list_pyqt.db_sqlite as DB
 
 # Reuses the add_entry_form UI file
 class editEntryForm(QDialog):

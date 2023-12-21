@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel, QVBoxLayout
-import src.globals as Globals
+import assignment_list_pyqt.globals as Globals
 
 class Group:
     def __init__(self, id, name, column = "left", link = "", hidden = False):
