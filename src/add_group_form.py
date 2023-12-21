@@ -1,7 +1,7 @@
+import os
 import sys
-from PyQt5.QtWidgets import QApplication, QComboBox, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
 
 import src.globals as Globals
 from src.group import Group
@@ -13,46 +13,16 @@ class addGroupForm(QDialog):
     """
     def __init__(self):
         super().__init__()
+        uic.loadUi(os.path.join("src", "add_group_form.ui"), self)
         self.initializeUI()
 
     def initializeUI(self):
-        self.resize(400, 1)
-        self.setWindowTitle("Add Group")
         self.displayWidgets()
         self.exec()
 
     def displayWidgets(self):
-        group_form_layout = QFormLayout()
-
-        title = QLabel("Add Group")
-        title.setFont(QFont("Arial", 18))
-        title.setAlignment(Qt.AlignCenter)
-        group_form_layout.addRow(title)
-
-        self.new_group_name = QLineEdit()
-        group_form_layout.addRow("Name:", self.new_group_name)
-
-        self.new_group_column = QComboBox()
-        self.new_group_column.addItems(["Left", "Right"])
-        group_form_layout.addRow("Column:", self.new_group_column)
-
-        self.new_group_link = QLineEdit() # TODO see if there is a widget specifically for URLs
-        group_form_layout.addRow("Link:", self.new_group_link)
-
-        # Submit and cancel buttons
-        buttons_h_box = QHBoxLayout()
-        buttons_h_box.addStretch()
-        close_button = QPushButton("Cancel")
-        close_button.clicked.connect(self.close)
-        buttons_h_box.addWidget(close_button)
-        submit_button = QPushButton("Submit")
-        submit_button.clicked.connect(self.handleSubmit)
-        buttons_h_box.addWidget(submit_button)
-        buttons_h_box.addStretch()
-
-        group_form_layout.addRow(buttons_h_box)
-
-        self.setLayout(group_form_layout)
+        self.buttonBox.rejected.connect(self.close)
+        self.buttonBox.accepted.connect(self.handleSubmit)
 
     def handleSubmit(self):
         name_text = self.new_group_name.text()
