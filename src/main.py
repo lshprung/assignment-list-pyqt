@@ -19,7 +19,8 @@ from src.rules_dialog import RulesDialog
 class AssignmentList(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi(os.path.join("src", "main.ui"), self)
+        uic.loadUi(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                   "main.ui"), self)
 
         self.initializeUI()
 

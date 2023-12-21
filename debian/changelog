@@ -1,5 +1,6 @@
-assignment-list (0.0.1-1) UNRELEASED; urgency=low
+assignment-list (0.0.1+git20231221-1) UNRELEASED; urgency=low
 
   * Initial release
+  * Newer upstream version
 
- -- louie <louie@example.com>  Wed, 27 Sep 2023 16:17:44 -0400
+ -- louie <louie@debian-pc>  Thu, 21 Dec 2023 11:37:46 -0800

@@ -1,13 +1,13 @@
 Source: assignment-list
 Section: utils
 Priority: optional
-Maintainer: louie <louie@example.com>
+Maintainer: louie <lshprung@tutanota.com>
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                python3-all,
                python3-setuptools
 Standards-Version: 4.5.1
-#Homepage: <insert the upstream URL, if relevant>
+Homepage: https://github.com/lshprung/assignment-list-pyqt
 Rules-Requires-Root: no
 #Vcs-Git: https://salsa.debian.org/debian/assignment-list.git
 #Vcs-Browser: https://salsa.debian.org/debian/assignment-list

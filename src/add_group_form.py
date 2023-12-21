@@ -13,7 +13,8 @@ class addGroupForm(QDialog):
     """
     def __init__(self):
         super().__init__()
-        uic.loadUi(os.path.join("src", "add_group_form.ui"), self)
+        uic.loadUi(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                   "add_group_form.ui"), self)
         self.initializeUI()
 
     def initializeUI(self):

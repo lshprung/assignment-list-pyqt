@@ -10,7 +10,8 @@ import src.db_sqlite as DB
 class addEntryForm(QDialog):
     def __init__(self, parent):
         super().__init__()
-        uic.loadUi(os.path.join("src", "add_entry_form.ui"), self)
+        uic.loadUi(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                   "add_entry_form.ui"), self)
         self.initializeUI(parent)
 
     def initializeUI(self, parent):
