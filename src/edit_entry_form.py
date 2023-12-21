@@ -1,12 +1,14 @@
+import os
 import sys
-from PyQt5.QtWidgets import QApplication, QCheckBox, QDateTimeEdit, QDialog, QFormLayout, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QDate, Qt
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
+from PyQt5.QtCore import QDate
 
 import src.globals as Globals
 from src.entry import Entry
 import src.db_sqlite as DB
 
+# Reuses the add_entry_form UI file
 class editEntryForm(QDialog):
     """
     Form to edit/update an entry
@@ -14,82 +16,42 @@ class editEntryForm(QDialog):
     def __init__(self, id):
         self.id = id
         super().__init__()
+        uic.loadUi(os.path.join("src", "add_entry_form.ui"), self)
         self.initializeUI()
 
     def initializeUI(self):
-        self.resize(400, 1)
         self.setWindowTitle("Edit Entry")
         self.displayWidgets()
         self.exec()
 
     def displayWidgets(self):
-        entry_form_layout = QFormLayout()
         entry = list(filter(lambda e: e.id == self.id, Globals.entries))[0]
 
-        title = QLabel("Edit Entry")
-        title.setFont(QFont("Arial", 18))
-        title.setAlignment(Qt.AlignCenter)
-        entry_form_layout.addRow(title)
-
-        self.entry_desc = QLineEdit()
-        self.entry_desc.setText(entry.desc)
-        entry_form_layout.addRow("Description:", self.entry_desc)
-
-        self.due_hbox = QHBoxLayout()
-        self.entry_due = QDateTimeEdit(QDate.currentDate())
-        self.entry_due.setDisplayFormat("MM/dd/yyyy")
+        self.title.setText("Edit Entry")
+        self.new_entry_desc.setText(entry.desc)
+        self.new_entry_due.setDate(QDate.currentDate())
         if entry.due:
-            self.entry_due.setDate(entry.due)
-        self.due_hbox.addWidget(self.entry_due)
-        self.entry_due_checkbox = QCheckBox()
-        if entry.due:
-            self.entry_due_checkbox.setChecked(True)
+            self.new_entry_due.setDate(entry.due)
+            self.new_entry_due_checkbox.setChecked(True)
         else:
-            self.entry_due_checkbox.setChecked(False)
-        self.due_hbox.addWidget(self.entry_due_checkbox)
-        entry_form_layout.addRow("Due Date:", self.due_hbox)
-
-        self.entry_due_alt = QLineEdit()
-        self.entry_due_alt.setText(entry.due_alt)
-        entry_form_layout.addRow("Due Date (Alt):", self.entry_due_alt)
-
-        self.entry_link = QLineEdit() # TODO see if there is a widget specifically for URLs
-        self.entry_link.setText(entry.link)
-        entry_form_layout.addRow("Link:", self.entry_link)
-
-        self.entry_color = QLineEdit()
-        self.entry_color.setText(entry.color)
-        entry_form_layout.addRow("Color:", self.entry_color)
-
-        self.entry_highlight = QLineEdit()
-        self.entry_highlight.setText(entry.highlight)
-        entry_form_layout.addRow("Highlight:", self.entry_highlight)
-
-        # Submit and cancel buttons
-        buttons_h_box = QHBoxLayout()
-        buttons_h_box.addStretch()
-        close_button = QPushButton("Cancel")
-        close_button.clicked.connect(self.close)
-        buttons_h_box.addWidget(close_button)
-        submit_button = QPushButton("Submit")
-        submit_button.clicked.connect(self.handleSubmit)
-        buttons_h_box.addWidget(submit_button)
-        buttons_h_box.addStretch()
-
-        entry_form_layout.addRow(buttons_h_box)
-
-        self.setLayout(entry_form_layout)
+            self.new_entry_due_checkbox.setChecked(False)
+        self.new_entry_due_alt.setText(entry.due_alt)
+        self.new_entry_link.setText(entry.link)
+        self.new_entry_color.setText(entry.color)
+        self.new_entry_highlight.setText(entry.highlight)
+        self.buttonBox.rejected.connect(self.close)
+        self.buttonBox.accepted.connect(self.handleSubmit)
 
     def handleSubmit(self):
-        desc_text = self.entry_desc.text()
-        if self.entry_due_checkbox.isChecked():
-            due_text = self.entry_due.date() # due_text is a QDate
+        desc_text = self.new_entry_desc.text()
+        if self.new_entry_due_checkbox.isChecked():
+            due_text = self.new_entry_due.date() # due_text is a QDate
         else:
             due_text = "" # due is unchecked
-        due_alt_text = self.entry_due_alt.text()
-        link_text = self.entry_link.text()
-        color_text = self.entry_color.text()
-        highlight_text = self.entry_highlight.text()
+        due_alt_text = self.new_entry_due_alt.text()
+        link_text = self.new_entry_link.text()
+        color_text = self.new_entry_color.text()
+        highlight_text = self.new_entry_highlight.text()
 
         if not desc_text:
             QMessageBox.warning(self, "Error Message",
