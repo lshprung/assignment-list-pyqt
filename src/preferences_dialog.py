@@ -1,5 +1,7 @@
+import os
 import sys
-from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog, QFormLayout, QHBoxLayout, QLineEdit, QPushButton, QTabWidget, QVBoxLayout, QWidget
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog
 from src.config import Config
 
 class PreferencesDialog(QDialog):
@@ -8,6 +10,7 @@ class PreferencesDialog(QDialog):
     """
     def __init__(self):
         super().__init__()
+        uic.loadUi(os.path.join("src", "preferences_dialog.ui"), self)
         
         # class globals
         self.config = Config()
@@ -15,58 +18,22 @@ class PreferencesDialog(QDialog):
         self.initializeUI()
 
     def initializeUI(self):
-        self.resize(500, 320)
-        self.setWindowTitle("Preferences")
         self.displayWidgets()
         self.exec()
 
     def displayWidgets(self):
         # TODO make this a scrollable window
         # FIXME could use some work on sizing
-        main_layout = QVBoxLayout()
-        tab_bar = QTabWidget(self)
-        paths_tab = self.pathsTabLayout()
+        self.pathsTabLayout()
 
-        tab_bar.addTab(paths_tab, "Paths")
-        main_layout.addWidget(tab_bar)
-        main_layout.addStretch()
-
-        buttons_hbox = QHBoxLayout()
-        buttons_hbox.addStretch()
-
-        close_button = QPushButton("Close", self)
-        close_button.clicked.connect(self.close)
-        buttons_hbox.addWidget(close_button)
-
-        apply_button = QPushButton("Apply", self)
-        apply_button.clicked.connect(self.apply)
-        buttons_hbox.addWidget(apply_button)
-
-        reload_button = QPushButton("Reload", self)
-        reload_button.clicked.connect(self.reload)
-        buttons_hbox.addWidget(reload_button)
-        
-        main_layout.addLayout(buttons_hbox)
-        self.setLayout(main_layout)
+        self.close_button.clicked.connect(self.close)
+        self.apply_button.clicked.connect(self.apply)
+        self.reload_button.clicked.connect(self.reload)
 
     def pathsTabLayout(self):
-        output = QWidget()
-        output_layout = QFormLayout()
-
-        # Dialog for setting the database file path
-        db_path_hbox = QHBoxLayout()
-        self.db_path_edit = QLineEdit()
         if "paths" in self.config.config:
             self.db_path_edit.setText(self.config.config["paths"]["db_path"])
-        db_path_hbox.addWidget(self.db_path_edit)
-        db_path_button = QPushButton("...")
-        db_path_button.setMaximumWidth(25)
-        db_path_button.clicked.connect(self.dbPathDialog)
-        db_path_hbox.addWidget(db_path_button)
-        output_layout.addRow("Database File:", db_path_hbox)
-
-        output.setLayout(output_layout)
-        return output
+        self.db_path_button.clicked.connect(self.dbPathDialog)
 
     def dbPathDialog(self):
         file_dialog = QFileDialog(self)

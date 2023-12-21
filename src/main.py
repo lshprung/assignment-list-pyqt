@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+import os
 import sys
 import time
-from PyQt5.QtWidgets import QAction, QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QToolBar, QVBoxLayout, QWidget
-from PyQt5.QtGui import QCursor, QFont
+from PyQt5 import uic
+from PyQt5.QtWidgets import QAction, QApplication, QMainWindow, QMenu, QMessageBox, QVBoxLayout
+from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import QDate, Qt
 from src.config import Config
 from src.preferences_dialog import PreferencesDialog
@@ -17,12 +19,11 @@ from src.rules_dialog import RulesDialog
 class AssignmentList(QMainWindow):
     def __init__(self):
         super().__init__()
+        uic.loadUi(os.path.join("src", "main.ui"), self)
 
         self.initializeUI()
 
     def initializeUI(self):
-        self.resize(640, 480)
-        self.setWindowTitle("Assignment List")
         self.createMenu()
         self.createToolbar()
         Config()
@@ -31,72 +32,24 @@ class AssignmentList(QMainWindow):
         self.show()
 
     def createMenu(self):
-        menu_bar = self.menuBar()
-        file_menu = menu_bar.addMenu("File")
-        edit_menu = menu_bar.addMenu("Edit")
-        help_menu = menu_bar.addMenu("Help")
+        self.actionPreferences.triggered.connect(self.preferences)
+        self.actionReload.triggered.connect(self.reload)
+        self.actionExit.triggered.connect(self.close)
 
-        self.preferences_act = QAction("Preferences", self)
-        self.preferences_act.setShortcut("Alt+Return")
-        self.preferences_act.triggered.connect(self.preferences)
-        file_menu.addAction(self.preferences_act)
-        self.reload_act = QAction("Reload", self)
-        self.reload_act.setShortcut("F5")
-        self.reload_act.triggered.connect(self.reload)
-        file_menu.addAction(self.reload_act)
-        file_menu.addSeparator()
-        exit_act = QAction("Exit", self)
-        exit_act.setShortcut("Ctrl+Q")
-        exit_act.triggered.connect(self.close)
-        file_menu.addAction(exit_act)
+        self.actionAdd_Group.triggered.connect(self.addGroup)
+        self.actionClean_Hidden.triggered.connect(self.cleanHidden)
 
-        self.add_group_act = QAction("Add Group", self)
-        self.add_group_act.triggered.connect(self.addGroup)
-        edit_menu.addAction(self.add_group_act)
-        edit_menu.addSeparator()
-        self.clean_hidden_act = QAction("Permanently Delete Removed Groups and Entries", self)
-        self.clean_hidden_act.triggered.connect(self.cleanHidden)
-        edit_menu.addAction(self.clean_hidden_act)
-
-        about_act = QAction("About", self)
-        about_act.triggered.connect(self.aboutDialog)
-        help_menu.addAction(about_act)
+        self.actionAbout.triggered.connect(self.aboutDialog)
 
     def createToolbar(self):
-        tool_bar = QToolBar("Toolbar")
-        self.addToolBar(tool_bar)
-
-        tool_bar.addAction(self.add_group_act)
+        self.toolBar.addAction(self.actionAdd_Group)
 
     def setupDB(self):
         DB.initDB()
 
     def displayWidgets(self):
-        main_widget_scroll_area = QScrollArea(self)
-        main_widget_scroll_area.setWidgetResizable(True)
-        main_widget = QWidget()
-        self.setCentralWidget(main_widget_scroll_area)
-
-        title = QLabel(time.strftime("%A, %b %d %Y"))
-        title.setFont(QFont("Arial", 17))
-        title.setTextInteractionFlags(Qt.TextSelectableByMouse)
-
-        title_h_box = QHBoxLayout()
-        title_h_box.addStretch()
-        title_h_box.addWidget(title)
-        title_h_box.addStretch()
-
-        self.groups_layout = QGridLayout()
-        self.groups_layout.setContentsMargins(20, 5, 20, 5)
+        self.title.setText(time.strftime("%A, %b %d %Y"))
         self.drawGroups()
-
-        v_box = QVBoxLayout()
-        v_box.addLayout(title_h_box)
-        v_box.addLayout(self.groups_layout)
-        v_box.addStretch()
-
-        main_widget.setLayout(v_box)
-        main_widget_scroll_area.setWidget(main_widget)
 
     def addGroup(self):
         """
