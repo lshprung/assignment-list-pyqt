@@ -3,8 +3,8 @@ import os
 import sys
 import time
 from PyQt5 import uic
-from PyQt5.QtWidgets import QAction, QApplication, QGridLayout, QHBoxLayout, QLabel, QMainWindow, QMenu, QMessageBox, QScrollArea, QVBoxLayout, QWidget
-from PyQt5.QtGui import QCursor, QFont
+from PyQt5.QtWidgets import QAction, QApplication, QMainWindow, QMenu, QMessageBox, QVBoxLayout
+from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import QDate, Qt
 from src.config import Config
 from src.preferences_dialog import PreferencesDialog
@@ -24,8 +24,6 @@ class AssignmentList(QMainWindow):
         self.initializeUI()
 
     def initializeUI(self):
-        #self.resize(640, 480)
-        #self.setWindowTitle("Assignment List")
         self.createMenu()
         self.createToolbar()
         Config()
@@ -34,36 +32,14 @@ class AssignmentList(QMainWindow):
         self.show()
 
     def createMenu(self):
-        #menu_bar = self.menuBar()
-        #file_menu = menu_bar.addMenu("File")
-        #edit_menu = menu_bar.addMenu("Edit")
-        #help_menu = menu_bar.addMenu("Help")
-
-        #self.preferences_act = QAction("Preferences", self)
-        #self.preferences_act.setShortcut("Alt+Return")
         self.actionPreferences.triggered.connect(self.preferences)
-        #file_menu.addAction(self.preferences_act)
-        #self.reload_act = QAction("Reload", self)
-        #self.reload_act.setShortcut("F5")
         self.actionReload.triggered.connect(self.reload)
-        #file_menu.addAction(self.reload_act)
-        #file_menu.addSeparator()
-        #exit_act = QAction("Exit", self)
-        #exit_act.setShortcut("Ctrl+Q")
         self.actionExit.triggered.connect(self.close)
-        #file_menu.addAction(exit_act)
 
-        #self.add_group_act = QAction("Add Group", self)
         self.actionAdd_Group.triggered.connect(self.addGroup)
-        #self.actionAdd_Group.addAction(self.add_group_act)
-        #edit_menu.addSeparator()
-        #self.clean_hidden_act = QAction("Permanently Delete Removed Groups and Entries", self)
         self.actionClean_Hidden.triggered.connect(self.cleanHidden)
-        #edit_menu.addAction(self.clean_hidden_act)
 
-        #about_act = QAction("About", self)
         self.actionAbout.triggered.connect(self.aboutDialog)
-        #help_menu.addAction(about_act)
 
     def createToolbar(self):
         self.toolBar.addAction(self.actionAdd_Group)
@@ -72,31 +48,8 @@ class AssignmentList(QMainWindow):
         DB.initDB()
 
     def displayWidgets(self):
-        #main_widget_scroll_area = QScrollArea(self)
-        #main_widget_scroll_area.setWidgetResizable(True)
-        #main_widget = QWidget()
-        #self.setCentralWidget(main_widget_scroll_area)
-
         self.title.setText(time.strftime("%A, %b %d %Y"))
-        #self.title.setFont(QFont("Arial", 17))
-        #self.title.setTextInteractionFlags(Qt.TextSelectableByMouse)
-
-        #title_h_box = QHBoxLayout()
-        #title_h_box.addStretch()
-        #title_h_box.addWidget(title)
-        #title_h_box.addStretch()
-
-        #self.groups_layout = QGridLayout()
-        #self.groups_layout.setContentsMargins(20, 5, 20, 5)
         self.drawGroups()
-
-        #v_box = QVBoxLayout()
-        #v_box.addLayout(title_h_box)
-        #v_box.addLayout(self.groups_layout)
-        #v_box.addStretch()
-
-        #main_widget.setLayout(v_box)
-        #main_widget_scroll_area.setWidget(main_widget)
 
     def addGroup(self):
         """
