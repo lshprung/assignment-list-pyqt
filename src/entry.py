@@ -22,7 +22,10 @@ class Entry:
         bullet = QLabel()
         body = QLabel()
 
+        output.setContentsMargins(2,2,2,2)
+
         bullet.setFont(QFont("Arial", 11))
+        bullet.setMaximumWidth(15)
 
         body.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.LinksAccessibleByMouse)
         body.setFont(QFont("Arial", 11))
@@ -71,8 +74,6 @@ class Entry:
             body.setText(body.text() + "</a>")
             body.setToolTip("{}".format(self.link))
         output.addWidget(body)
-
-        output.addStretch()
 
         if self.done:
             font = body.font()
