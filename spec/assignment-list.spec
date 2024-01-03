@@ -6,7 +6,7 @@ Release:        1%{?dist}
 Summary:        Assignment List PyQt5
 
 License:        Unlicense
-#URL:            
+URL:            https://github.com/lshprung/assignment-list-pyqt
 Source0:        %{name}-%{version}.tar.gz
 
 BuildArch: noarch
@@ -43,12 +43,14 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_d
 
 %files -n python3-%{modname}
 %{_bindir}/assignment-list
-%{python3_sitelib}/src/
+%{python3_sitelib}/assignment_list_pyqt
 %{python3_sitelib}/assignment_list-%{version}*
 %{_datadir}/applications/%{modname}.desktop
 %{_datadir}/pixmaps/%{modname}.svg
 
 
 %changelog
+* Wed Jan 03 2024 Louie S <lshprung@tutanota.com> - 0.0.1
+- Update src directory name to assignment_list_pyqt
 * Thu Sep 21 2023 Louie S <louie@example.com>
-- 
+- Initial spec version
