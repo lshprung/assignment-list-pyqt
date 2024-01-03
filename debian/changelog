@@ -1,3 +1,9 @@
+assignment-list (0.0.1+git20240103-1) UNRELEASED; urgency=medium
+
+  * Reverse orientation of OK and Cancel buttons
+
+ -- louie <louie@debian-desktop>  Wed, 03 Jan 2024 17:21:28 -0500
+
 assignment-list (0.0.1+git20231221-1) UNRELEASED; urgency=low
 
   * Initial release
