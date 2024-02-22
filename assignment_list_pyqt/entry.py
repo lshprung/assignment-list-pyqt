@@ -48,7 +48,6 @@ class Entry:
                     color: green;
                 }
             """)
-            self.color = "green"
         else:
             bullet.setText("- ")
         output.addWidget(bullet)
